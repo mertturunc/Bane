@@ -405,6 +405,7 @@ exports.commands = {
 						console.log(message.sender.username + " \"eval " + suffix + "\" komutunu kullandı.");
 							var toSend = [], count = 0;
 							toSend.push( "```python");
+						toSend.push("Eval başarılı.");
 						toSend.push(eval(suffix));
 							toSend.push( "```" );
 							bot.sendMessage(message, toSend);
