@@ -4,7 +4,6 @@ const Discord = require('discord.js');
 const fs = require('fs');
 const trigger = "*";
 var jsonFolder = "./json/";
-var picFolder = "./photos/";
 
 try {
 	require(jsonFolder + 'config.json');
