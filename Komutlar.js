@@ -22,6 +22,9 @@ function updateEvalPerms() {updateJSON(jsonFolder + "evalwhitelist.json");};
 function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
 
 //var şeyside buraya
+var jsonFolder = "./json/";
+var picFolder = "./photos/";
+
 var aliases = {
 	"h": "yardım", "komutlar": "help",
 	"myid": "id",
