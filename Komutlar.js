@@ -1,5 +1,23 @@
 'use strict';
-//fonksiyonlar buraya
+
+//var şeysi buraya
+var jsonFolder = "./json/";
+var picFolder = "./photos/";
+
+var aliases = {
+	"h": "yardım", "komutlar": "help",
+	"myid": "id",
+	"p": "ping",
+	"j": "katıl", "joins": "join",
+	"i": "info",
+	"a": "avatar",
+	"g": "google", "lmgtfy": "google",
+};
+
+var config = require(jsonFolder + "config.json");
+var version = require("./package.json").version; //don't touch this
+
+//fonksiyonlar da buraya
 
 function findUser(members, query) {
 	var usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase() == query.toLowerCase() });
@@ -20,23 +38,6 @@ function updateJSON(fnjson, fjson) {
 };
 function updateEvalPerms() {updateJSON(jsonFolder + "evalwhitelist.json");};
 function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
-
-//var şeyside buraya
-var jsonFolder = "./json/";
-var picFolder = "./photos/";
-
-var aliases = {
-	"h": "yardım", "komutlar": "help",
-	"myid": "id",
-	"p": "ping",
-	"j": "katıl", "joins": "join",
-	"i": "info",
-	"a": "avatar",
-	"g": "google", "lmgtfy": "google",
-};
-
-var config = require(jsonFolder + "config.json");
-var version = require("./package.json").version; //don't touch this
 
 
 exports.commands = {
