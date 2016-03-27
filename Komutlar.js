@@ -15,7 +15,7 @@ var aliases = {
 };
 
 
-var child_process = require("child_process");
+
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient(account);
 var config = require(jsonFolder + "config.json");
@@ -63,7 +63,7 @@ exports.commands = {
 									 }
 							 });
 					 } catch(e) {
-							 logger.debug("Error !ttv at " + msg.channel + " : " + e);
+							 console.log("Error !ttv at " + msg.channel + " : " + e);
 					 }
 			 }
 	 },
