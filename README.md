@@ -32,5 +32,6 @@ To-Do List
         ·run file for bot "git stash && git pull && git fetch && node Bane.js"
         ·ffmpeg to opus
         ·youtube search for music bot
+        ·need to translate
 
         
