@@ -5,7 +5,7 @@ A Discord bot based on [CommunityBot](https://github.com/OneMansGlory/CommunityB
 
 Currently in pre-alpha stages.
 
-![codeship](https://codeship.com/projects/142773/status?branch=master)
+![codeship](https://codeship.com/projects/4c86ea90-d689-0133-5867-2e9d1cff2918/status?branch=master)
 
 Usage
 -----
