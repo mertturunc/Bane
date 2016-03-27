@@ -13,7 +13,10 @@ var aliases = {
 	"a": "avatar",
 	"g": "google", "lmgtfy": "google",
 };
-
+var child_process = require("child_process");
+var account = AuthDetails.ttv;
+var ttvc = new TwitchClient(account);
+var TwitchClient = require("node-twitchtv");
 var config = require(jsonFolder + "config.json");
 var version = require("./package.json").version; //don't touch this
 
@@ -41,6 +44,28 @@ function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
 
 
 exports.commands = {
+//adama sorarlar neden en üstte bu, çünkü çorçik ve çalışıyo mu bilmiyorum
+	"twitch":{
+			 process : function(bot,msg,suffix) {
+					 try {
+							 suffix = suffix.replace(' ', '');
+							 ttvc.streams({ channel: suffix }, function(err, response) {
+									 if(err) throw new Error (err);
+									 if(response.stream == null) {
+											 bot.sendMessage(msg.channel, "Aradığınız yayın kapalı.");
+									 } else {
+											 var rt = "**Başlık:** " + response.stream.channel.status + "\n";
+													 rt += "**Oyun:** " + response.stream.game + "\n";
+													 rt += "**İzleyici:** " + response.stream.viewers + "\n";
+													 rt += "**Link:** <" + response.stream.channel.url + ">\n";
+													 bot.sendMessage(msg.channel, rt);
+									 }
+							 });
+					 } catch(e) {
+							 logger.debug("Error !ttv at " + msg.channel + " : " + e);
+					 }
+			 }
+	 },
 //bırakta senin için gogıllasın -AYAKLI GOOGIL
 	"g": {
 		process: function(bot, msg, suffix) {
