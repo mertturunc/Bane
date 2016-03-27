@@ -40,7 +40,7 @@ exports.commands = {
 											 var rt = "**Başlık:** " + response.stream.channel.status + "\n";
 													 rt += "**Oyun:** " + response.stream.game + "\n";
 													 rt += "**İzleyici:** " + response.stream.viewers + "\n";
-													 rt += "**Link:** <" + response.stream.channel.url + ">\n";
+													 rt += "**Link:** ``" + response.stream.channel.url + "``\n";
 													 bot.sendMessage(msg.channel, rt);
 									 }
 							 });
@@ -275,8 +275,16 @@ exports.commands = {
 //			}
 //		}
 //	},
+//dozkana ait twitch kanalı için abone olma linki yollar
+"abone-dozkan": {
+	process: function(bot, message) {
+		bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
+		bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button ");
+		if (message.mentions.length > -1) { bot.deleteMessage(message); }
+		}
+},
 //videoyuna ait twitch kanalı için abone olma linki yollar
-	"abone-ol": {
+	"abone-videoyun": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
 			bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button ");
@@ -471,9 +479,8 @@ exports.commands = {
 	"yardım": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, ":postbox:", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-ol`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-ol`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
+			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-videoyun`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-dozkan`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
 			if (message.mentions.length > -1) { bot.deleteMessage(message); }
 		}
 	}
 };
-exports.aliases = aliases;
