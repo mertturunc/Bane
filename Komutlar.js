@@ -4,7 +4,7 @@
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var TwitchClient = require("node-twitchtv");
-var ttvc = new TwitchClient(account);
+var ttvc = new TwitchClient("account");
 var config = require(jsonFolder + "config.json");
 var version = require("./package.json").version; //don't touch this
 //fonksiyonlar da buraya
@@ -40,7 +40,7 @@ exports.commands = {
 											 var rt = "**Başlık:** " + response.stream.channel.status + "\n";
 													 rt += "**Oyun:** " + response.stream.game + "\n";
 													 rt += "**İzleyici:** " + response.stream.viewers + "\n";
-													 rt += "**Link:** ``" + response.stream.channel.url + "``\n";
+													 rt += "**Link:**" + "`` " + response.stream.channel.url + " ``\n";
 													 bot.sendMessage(msg.channel, rt);
 									 }
 							 });
