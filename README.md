@@ -12,9 +12,25 @@ Usage
         git clone https://github.com/mertturunc/Bane.git
         cd ./Bane/
         npm install
-        
+
 Then, make your config.json based off from config-base.json. After done all that,
 
         node Bane.js
-        
+
 to run the script.
+
+
+
+
+
+To-Do List
+-----
+        ·emote archive system
+        ·sending image with text
+        ·variables for commands for example: "g","google", "search" and "lmgtfy"
+        ·changing commandwhitelist with command
+        ·run file for bot "git stash && git pull && git fetch && node Bane.js"
+        ·ffmpeg to opus
+        ·youtube search for music bot
+
+        

@@ -4,7 +4,7 @@
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var TwitchClient = require("node-twitchtv");
-var ttvc = new TwitchClient("account");
+var ttvc = new TwitchClient("");
 var config = require(jsonFolder + "config.json");
 var version = require("./package.json").version; //don't touch this
 //fonksiyonlar da buraya
@@ -165,7 +165,7 @@ exports.commands = {
 								else toSend.push("**Durumu:** " + usr.status);
 								var detailsOf = msg.channel.server.detailsOfUser(usr);
 								if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-								else toSend.push("**Sunucuya katılım zamanı:** ``Katılmadı``");
+								else toSend.push("**Sunucuya katılma zamanı:** ``Katılmadı``");
 								if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
 									var roles = msg.channel.server.rolesOfUser(usr.id).map(role=>role.name);
 									if (roles) {
@@ -195,8 +195,8 @@ exports.commands = {
 									if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **son oynadığı oyun** " + usr.game.name);
 									else toSend.push("**Durumu:** " + usr.status);
 									var detailsOf = msg.channel.server.detailsOfUser(usr);
-									if (detailsOf) toSend.push("**Şuraya katıldım:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-									else toSend.push("**Şuraya katıldım:** Errör");
+									if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
+									else toSend.push("**Sunucuya katılma zamanı:** Errör");
 									if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
 										var roles = msg.channel.server.rolesOfUser(usr.id).map(role=>role.name);
 										if (roles) {
