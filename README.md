@@ -5,6 +5,8 @@ A Discord bot based on [CommunityBot](https://github.com/OneMansGlory/CommunityB
 
 Currently in pre-alpha stages.
 
+https://codeship.com/projects/142773/status?branch=master
+
 Usage
 -----
         git clone https://github.com/mertturunc/Bane.git
