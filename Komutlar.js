@@ -153,7 +153,7 @@ exports.commands = {
 								var toSend = [], count = 0;
 								toSend.push(usr.username  + " #" + usr.discriminator + " " + "Hakkındaki bilgiler:" );
 								toSend.push("**ID:** " + usr.id);
-								if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **En son oynadığı oyun:** " + usr.game.name);
+								if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **son oynadığı oyun** " + usr.game.name);
 								else toSend.push("**Durumu:** " + usr.status);
 								var detailsOf = msg.channel.server.detailsOfUser(usr);
 								if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
@@ -184,7 +184,7 @@ exports.commands = {
 									var toSend = [], count = 0;
 									toSend.push( usr.username + "#" + usr.discriminator + "Hakkındaki bilgiler:" );
 									toSend.push("**ID:** " + usr.id);
-									if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Status:** " + usr.status + " **last playing** " + usr.game.name);
+									if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **son oynadığı oyun** " + usr.game.name);
 									else toSend.push("**Durumu:** " + usr.status);
 									var detailsOf = msg.channel.server.detailsOfUser(usr);
 									if (detailsOf) toSend.push("**Şuraya katıldım:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
