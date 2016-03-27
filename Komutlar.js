@@ -3,47 +3,29 @@
 //var şeysi buraya
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
-
-var aliases = {
-	"h": "yardım", "komutlar": "help",
-	"myid": "id",
-	"p": "ping",
-	"j": "katıl", "joins": "join",
-	"i": "info",
-	"a": "avatar",
-	"g": "google", "lmgtfy": "google",
-};
-
-
-
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient(account);
 var config = require(jsonFolder + "config.json");
 var version = require("./package.json").version; //don't touch this
-
 //fonksiyonlar da buraya
-
 function findUser(members, query) {
 	var usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase() == query.toLowerCase() });
 	if (!usr) { usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase().indexOf(query.toLowerCase()) == 0 }); }
 	if (!usr) { usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase().indexOf(query.toLowerCase()) > -1 }); }
 	return usr || false;
 };
-
 function numcon(str) {
     if(/^[0-9]+$/.test(str)) {
         return true;
     }
     return false;
 };
-
 function updateJSON(fnjson, fjson) {
     require("fs").writeFile(jsonFolder + fnjson,JSON.stringify(fjson,null,2), null);
 };
 function updateEvalPerms() {updateJSON(jsonFolder + "evalwhitelist.json");};
 function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
-
-
+//hülooooooğ
 exports.commands = {
 //adama sorarlar neden en üstte bu, çünkü çorçik ve çalışıyo mu bilmiyorum
 	"twitch":{
