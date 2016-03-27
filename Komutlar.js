@@ -16,8 +16,8 @@ var aliases = {
 
 
 var child_process = require("child_process");
-var ttvc = new TwitchClient(account);
 var TwitchClient = require("node-twitchtv");
+var ttvc = new TwitchClient(account);
 var config = require(jsonFolder + "config.json");
 var version = require("./package.json").version; //don't touch this
 
