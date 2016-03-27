@@ -462,36 +462,9 @@ exports.commands = {
 	"yardım": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, ":postbox:", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-ol`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-ol`` , ``avatar`` , ``id`` , ``eval`` , ``kappa``  .")
+			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-ol`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-ol`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` .")
 			if (message.mentions.length > -1) { bot.deleteMessage(message); }
 		}
 	}
 };
-
-
-
 exports.aliases = aliases;
-
-
-
-
-
-
-
-////////////todo list//////////
-///////////////////////////////
-//c.c botundaki gibi bir emote sistemi
-//görselle birlikte yazı gönderme
-//	---daha mantıklı bir eval, öküz gibi hata sıçıyo---, +++linux halletti+++
-//	---avatarları direk görsel olarak atma---, +++embeded iş yapıyo gerek kalmadı+++
-//komutlar için varyasyon örn: *g yerine *google *search *lmgtfy kullanılabilsin
-//twitch.tv canlı yayın istatistiği komutu
-//komut ile yetki listesini düzenleme // ez, yapılabilir ~lg
-//bot için çalıştırma dosyası // pek de ez değil, en azından linux kullananlar için ~lg
-//
-//
-//
-//
-//
-//
-///////////////////////////////
