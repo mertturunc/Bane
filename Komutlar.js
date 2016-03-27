@@ -16,7 +16,7 @@ var aliases = {
 try {
 	var AuthDetails = require(jsonFolder + "auth.json");
 } catch (e) {
-	logger.debug("Please create an auth.json like auth.json.example with at least an email and password.");
+	console.log("Please create an auth.json like auth.json.example with at least an email and password.");
 	process.exit();
 }
 
