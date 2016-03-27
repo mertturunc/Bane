@@ -463,7 +463,7 @@ exports.commands = {
 	"yardım": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, ":postbox:", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-ol`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-ol`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` .")
+			bot.sendMessage(message.author, "Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-ol`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-ol`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
 			if (message.mentions.length > -1) { bot.deleteMessage(message); }
 		}
 	}
