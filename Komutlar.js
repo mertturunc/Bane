@@ -13,15 +13,9 @@ var aliases = {
 	"a": "avatar",
 	"g": "google", "lmgtfy": "google",
 };
-try {
-	var AuthDetails = require(jsonFolder + "auth.json");
-} catch (e) {
-	console.log("Please create an auth.json like auth.json.example with at least an email and password.");
-	process.exit();
-}
+
 
 var child_process = require("child_process");
-var account = AuthDetails.ttv;
 var ttvc = new TwitchClient(account);
 var TwitchClient = require("node-twitchtv");
 var config = require(jsonFolder + "config.json");
