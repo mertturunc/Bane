@@ -27,7 +27,7 @@ function updateEvalPerms() {updateJSON(jsonFolder + "evalwhitelist.json");};
 function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
 //hülooooooğ
 exports.commands = {
-//adama sorarlar neden en üstte bu, çünkü çorçik ve çalışıyo mu bilmiyorum
+//videoyun yayın açmış mı lirik yaşıyo mu filan bunları bu kodla öğrenebilirsin
 	"twitch":{
 			 process : function(bot,msg,suffix) {
 					 try {
@@ -35,9 +35,10 @@ exports.commands = {
 							 ttvc.streams({ channel: suffix }, function(err, response) {
 									 if(err) throw new Error (err);
 									 if(response.stream == null) {
-											 bot.sendMessage(msg.channel, "Aradığınız yayın kapalı.");
+											 bot.sendMessage(msg.channel, "**Yayın durumu:**" + " Kapalı");
 									 } else {
-											 var rt = "**Başlık:** " + response.stream.channel.status + "\n";
+											 var rt = "**Yayın durumu:** " + "Açık" + "\n";
+											 		 rt += "**Başlık:** " + response.stream.channel.status + "\n";
 													 rt += "**Oyun:** " + response.stream.game + "\n";
 													 rt += "**İzleyici:** " + response.stream.viewers + "\n";
 													 rt += "**Link:**" + "`` " + response.stream.channel.url + " ``\n";
@@ -45,7 +46,7 @@ exports.commands = {
 									 }
 							 });
 					 } catch(e) {
-							 console.log("Error !ttv at " + msg.channel + " : " + e);
+							 console.log(msg.channel + "isim kanalda şu hata oluştu:" + e);
 					 }
 			 }
 	 },
