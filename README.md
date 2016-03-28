@@ -33,5 +33,5 @@ To-Do List
         ·ffmpeg to opus
         ·youtube search for music bot
         ·need to translate
-
-        
+        ·need to add finduser function to mesajsil(purge) command
+        ·chatlog saver
