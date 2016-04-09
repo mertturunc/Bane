@@ -213,7 +213,7 @@ exports.commands = {
 								else toSend.push("**Durumu:** " + usr.status);
 								var detailsOf = msg.channel.server.detailsOfUser(usr);
 								if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-								else toSend.push("**Sunucuya katılma zamanı:** Errör");
+								else toSend.push("**Sunucuya katılma zamanı:** ``Katılmadı``");
 								if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
 									var roles = msg.channel.server.rolesOfUser(usr.id).map(role=>role.name);
 									if (roles) {
