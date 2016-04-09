@@ -372,7 +372,6 @@ exports.commands = {
 //				}
 //			});
 //		}
-		process: function(bot, message)
   	},
 //en gereksiz kod
 	"helö": {
