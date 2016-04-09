@@ -147,7 +147,7 @@ exports.commands = {
 	//kim ulan bu bot
 	"hakkında": {
 		process: function(bot, msg) {
-			var gitlinkA = getinfo.url.replace("git+", "");
+			var gitlinkA = getinfo.repository.url.replace("git+", "");
 			var gitlinkB = gitlinkA.replace(".git", "");
 			if (getinfo.name === "Bane") {
 				var toSend = [], count = 0;
@@ -508,13 +508,22 @@ exports.commands = {
 	"unshort": {
 		process: function(bot, message, suffix) {
 			var params = { shortUrl: suffix };
-			urlshortener.url.get(params, function(bot, message, err, response) {
-				if (err) {
-					bot.sendMessage(message, "Bir hata ile karşılaşıldı. " + err);
-				} else {
-					bot.sendMessage(message, message.author + ", Here is your unshortened link: " + response.longUrl);
-				}
-			});
+			if (!suffix) {
+				bot.sendMessage(message, "Please use this command **with** a shortlink from `goo.gl`.");
+				return;
+			} else {
+				urlshortener.url.get(params, function(err, response) {
+					if (err) {
+						var toSend = [], count = 0;
+							toSend.push("```");
+							toSend.push(err);
+							toSend.push("```");
+						bot.sendMessage(message, toSend);
+					} else {
+						bot.sendMessage(message, "Here is your unshortened link: " + response.longUrl);
+					}
+				});
+			}
 		}
 	},
 
