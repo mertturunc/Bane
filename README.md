@@ -13,7 +13,7 @@ Usage
         cd ./Bane/
         npm install
 
-Then, make your config.json based off from config-base.json. After done all that,
+Then, make your config.json based off from config-base.json. *(We won't provide any Discord API support.)* After done all that,
 
         node Bane.js
 
