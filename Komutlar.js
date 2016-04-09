@@ -506,7 +506,7 @@ exports.commands = {
 	},
 //unshorts goo.gl links
 	"unshort": {
-		process: functon(bot, message, suffix) {
+		process: function(bot, message, suffix) {
 			var params = { shortUrl: suffix };
 			urlshortener.url.get(params, function(bot, message, err, response) {
 				if (err) {
