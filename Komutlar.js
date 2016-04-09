@@ -213,7 +213,7 @@ exports.commands = {
 								else toSend.push("**Durumu:** " + usr.status);
 								var detailsOf = msg.channel.server.detailsOfUser(usr);
 								if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-								else toSend.push("**Sunucuya katılma zamanı:** ``Katılmadı``");
+								else toSend.push("**Sunucuya katılma zamanı:** Errör");
 								if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
 									var roles = msg.channel.server.rolesOfUser(usr.id).map(role=>role.name);
 									if (roles) {
@@ -316,7 +316,7 @@ exports.commands = {
 				if (commandWhiteList.indexOf(message.sender.id) > -1) {
 					bot.sendMessage(message.channel, "**Biraz dinlenmem gerek.**")
 					setTimeout(function(){process.exit(0);}, 1500);
-					console.log("\nByeBye!");
+					console.log("ByeBye!");
 				} else {
 					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
 				}
