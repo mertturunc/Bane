@@ -316,7 +316,7 @@ exports.commands = {
 				if (commandWhiteList.indexOf(message.sender.id) > -1) {
 					bot.sendMessage(message.channel, "**Biraz dinlenmem gerek.**")
 					setTimeout(function(){process.exit(0);}, 1500);
-					console.log("ByeBye!");
+					console.log("\nByeBye!");
 				} else {
 					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
 				}
@@ -346,7 +346,7 @@ exports.commands = {
 //botun bir sunucuya katılmasını sağlar
 	"katıl": {
 		process: function(bot, message) {
-			bot.sendMessage(message.channel, ":postbox:");
+			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
 			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=40960")
 		}
 //		process: function(bot, message, suffix) {
