@@ -5,7 +5,7 @@ var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient("");
-var config = require(jsonFolder + "config.json");
+var config = require(jsonFolder + "config.json").api_client_id;
 var getinfo = require("./package.json"); //don't touch this
 var google = require('googleapis');
 var urlshortener = google.urlshortener('v1');
@@ -293,20 +293,20 @@ exports.commands = {
 //		}
 //	},
 //dozkana ait twitch kanalı için abone olma linki yollar
-"abone-dozkan": {
-	process: function(bot, message) {
-		bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-		bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button ");
-		if (message.mentions.length > -1) { bot.deleteMessage(message); }
+	"abone-dozkan": {
+		process: function(bot, message) {
+			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
+			bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button ");
+			if (message.mentions.length > -1) { bot.deleteMessage(message); }
 		}
-},
+	},
 //videoyuna ait twitch kanalı için abone olma linki yollar
 	"abone-videoyun": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
 			bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button ");
 			if (message.mentions.length > -1) { bot.deleteMessage(message); }
-			}
+		}
 	},
 //botu kapatıyorsun ama ayıp değil mi?
 	"kapa": {
@@ -347,7 +347,7 @@ exports.commands = {
 	"katıl": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=40960")
+			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config + "&scope=bot&permissions=40960")
 		}
 //		process: function(bot, message, suffix) {
 //			let query = suffix;
@@ -528,3 +528,4 @@ exports.commands = {
 	},
 
 };
+
