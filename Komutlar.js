@@ -176,7 +176,7 @@ exports.commands = {
 						if (msg.mentions.length > 4) { bot.sendMessage(msg, "Komutun kullanımı 4 kişi ile limitlidir.", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 24000}); }); return; }
 						msg.mentions.map(function(usr) {
 							var toSend = [], count = 0;
-							toSend.push(usr.username  + " #" + usr.discriminator + " Hakkındaki bilgiler:" );
+							toSend.push(usr.username  + " #" + usr.discriminator + " hakkındaki bilgiler:" );
 							toSend.push("**ID:** " + usr.id);
 							if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **son oynadığı oyun** " + usr.game.name);
 							else toSend.push("**Durumu:** " + usr.status);
@@ -193,8 +193,6 @@ exports.commands = {
 										toSend.push("**Rolleri:** `yok`");
 								} else toSend.push("**Rolleri:** Errör");
 							} else toSend.push("**Rolleri:** Errör");
-							bot.servers.map(server=>{ if (server.members.indexOf(usr) > -1) { count += 1; }});
-							if (count > 1) { toSend.push("**Ortak sunucular:** " + count); }
 							if (usr.avatarURL != null) { toSend.push("**Avatar URL:** `" + usr.avatarURL + "`"); }
 							if (msg.mentions.length >= 1) { bot.deleteMessage(msg); }
 							bot.sendMessage(msg, toSend);
@@ -207,7 +205,7 @@ exports.commands = {
 							var usr = findUser(msg.channel.server.members, user);
 							if (usr) {
 								var toSend = [], count = 0;
-								toSend.push(usr.username + " #" + usr.discriminator + " Hakkındaki bilgiler:" );
+								toSend.push(usr.username + " #" + usr.discriminator + " hakkındaki bilgiler:" );
 								toSend.push("**ID:** " + usr.id);
 								if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + usr.status + " **son oynadığı oyun** " + usr.game.name);
 								else toSend.push("**Durumu:** " + usr.status);
@@ -224,8 +222,6 @@ exports.commands = {
 											toSend.push("**Rolleri:** `yok`");
 									} else toSend.push("**Rolleri:** Errör");
 								} else toSend.push("**Rolleri:** Errör");
-								bot.servers.map(server=>{ if (server.members.indexOf(usr) > -1) { count += 1; }});
-								if (count > 1) { toSend.push("**Ortak sunucular:** " + count); }
 								if (usr.avatarURL != null) { toSend.push("**Avatar URL:** `" + usr.avatarURL + "`"); }
 								if (msg.mentions.length >= 1) { bot.deleteMessage(msg); }
 								bot.sendMessage(msg, toSend);
