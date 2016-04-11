@@ -330,7 +330,7 @@ exports.commands = {
 				if (message.mentions.length > -1) { bot.deleteMessage(message); };
 					bot.setStatus('online', suffix);
 					bot.sendMessage(message.channel, "Tamamdır! Şu an oynanan oyun: " + suffix, function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-					console.log(message.author.username + "  *ayarla komutunu kullandı.");
+					console.log(message.author.username + " \"*ayarla " + suffix + "\" " + "komutunu kullandı.");
 				} else {
 					bot.sendMessage(message, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
 				}
