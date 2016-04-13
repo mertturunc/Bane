@@ -1,11 +1,19 @@
 'use strict';
 
 //var şeysi buraya
+let upvote = 0;
+let downvote = 0;
+let voter = [];
+let votebool = false;
+let topicstring = "";
+let votecreator = "";
+let voteserver = "";
+let votechannel = "";
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient("");
-var config = require(jsonFolder + "config.json").api_client_id;
+const config = require(jsonFolder + "config.json");
 var getinfo = require("./package.json"); //don't touch this
 var google = require('googleapis');
 var urlshortener = google.urlshortener('v1');
@@ -343,7 +351,7 @@ exports.commands = {
 	"katıl": {
 		process: function(bot, message) {
 			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config + "&scope=bot&permissions=40960")
+			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=40960")
 		}
 //		process: function(bot, message, suffix) {
 //			let query = suffix;
@@ -503,7 +511,7 @@ exports.commands = {
 //unshorts goo.gl links
 	"unshort": {
 		process: function(bot, message, suffix) {
-			var params = { shortUrl: suffix };
+			var params = { auth: config.google_api_key, shortUrl: suffix};
 			if (!suffix) {
 				bot.sendMessage(message, "Please use this command **with** a shortlink from `goo.gl`.");
 				return;
@@ -522,6 +530,61 @@ exports.commands = {
 			}
 		}
 	},
-
+//OYLAMAĞĞĞ
+	"yenioylama": {
+		process: function (bot, msg, suffix) {
+			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+			if (commandWhitelist.indexOf(msg.sender.id) > -1) {
+    			if (!suffix) { bot.sendMessage(msg.channel, "Lütfen bir bilgi belirtiniz."); return; }
+    			if (votebool == true) { bot.sendMessage(msg, "Hali hazırda bir oylama işlemde."); return; }
+    			topicstring = suffix;
+    			votecreator = msg.sender.username;
+    			voteserver = msg.channel.server.name
+    			votechannel = msg.channel.name
+    			bot.sendMessage(msg, "Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
+    			votebool = true;
+    		} else {
+    			bot.sendMessage(msg, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+    		}
+    	}
+	},
+	"oyver": {
+    	process: function (bot, msg, suffix) {
+			if (!suffix) { bot.sendMessage(msg, "Bir şeye oy vermen lazım!"); return; }
+			if (votebool == false) { bot.sendMessage(msg, "Şu anda aktif bir oylama yok. `*yenioylama` komutu ile yeni bir oylama başlatabilirsin."); return; }
+			if (voter.indexOf(msg.author) != -1) { return; }
+			voter.push(msg.author);
+			var vote = suffix.split(" ")[0]
+			if (vote == "+") { upvote += 1; }
+			if (vote == "-") { downvote += 1; }
+    	}
+	},
+	"oydurumu": {
+		process: function(bot, msg) {
+			var msgArray = [];
+			if (votebool == true) {bot.sendMessage(msg.channel, "Şu anda aktif bir oylama var.\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`")}
+			else {
+				bot.sendMessage(msg.channel, "Şu anda bir oylama aktif değil.")
+			}
+		}
+	},
+	"oylamayasonver": {
+		process: function (bot, msg, suffix) {
+			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+			if (commandWhitelist.indexOf(msg.sender.id) > -1) {
+				bot.sendMessage(msg, "`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`");
+				upvote = 0;
+				downvote = 0;
+				voter = [];
+				votebool = false;
+				topicstring = "";
+				votecreator = "";
+				votechannel = "";
+				voteserver = "";
+			} else {
+				bot.sendMessage(msg, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+			}
+    	}
+  	}
 };
 
