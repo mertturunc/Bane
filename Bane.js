@@ -40,3 +40,4 @@ bot.on("message", function (message) {
 });
 
 bot.loginWithToken(config.token);
+setTimeout(function(){bot.setStatus("online", "*yardım");}, 2000);
