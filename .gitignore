@@ -5,7 +5,6 @@
 logs
 *.log
 npm-debug.log*
-*.txt
 
 # Runtime data
 pids
@@ -41,3 +40,4 @@ jspm_packages
 config.json
 auth.json
 bKomutlar.js
+Crypter.js
