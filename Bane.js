@@ -14,6 +14,7 @@ try {
 const config = require(jsonFolder + 'config.json');
 
 let commands = require('./Komutlar.js').commands;
+let aliases = require(jsonFolder + "Aliases.json");
 let bot = new Discord.Client();
 
 bot.on("ready", function () {
@@ -35,9 +36,11 @@ bot.on("message", function (message) {
 	if (msg[0] === trigger) {
 		let command = msg.toLowerCase().split(" ")[0].substring(1);
 		let suffix = msg.substring(command.length + 2);
-		if (commands[command]) commands[command].process(bot, message, suffix);
+		if (commands[command]) {commands[command].process(bot, message, suffix);}
+		else
+		{if (aliases[command]) {var aliasEd = aliases[command]; commands[aliasEd].process(bot, message, suffix);} else {}};
 	}
 });
 
 bot.loginWithToken(config.token);
-setTimeout(function(){bot.setStatus("online", "*yardım");}, 2000);
+setTimeout(function(){bot.setStatus("online", "*yardım");}, 2000)

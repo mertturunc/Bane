@@ -11,6 +11,7 @@ let voteserver = "";
 let votechannel = "";
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
+var libFolder = "./lib/";
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient("");
 var getinfo = require("./package.json"); //don't touch this
@@ -519,12 +520,42 @@ exports.commands = {
 	"unshort": {
 		process: function(bot, message, suffix) {
 			var config = require(jsonFolder + "config.json");
-			var params = { auth: config.google_api_key, shortUrl: suffix};
+			var params = {auth: config.google_api_key, shortUrl: suffix};
+			var suffix1 = suffix.replace("http://" + "https://", "");
+			var suffix2 = suffix1.split("/");
 			if (!suffix) {
 				bot.sendMessage(message, "Please use this command **with** a shortlink from `goo.gl`.");
 				return;
 			} else {
-				urlshortener.url.get(params, function(err, response) {
+				if (suffix2.indexOf("goo.gl") > -1) {
+					urlshortener.url.get(params, function(err, response) {
+						if (err) {
+							var toSend = [], count = 0;
+								toSend.push("```");
+								toSend.push(err);
+								toSend.push("```");
+							bot.sendMessage(message, toSend);
+						} else {
+							bot.sendMessage(message.author, "Here is your unshortened link: " + response.longUrl);
+						}
+					});
+				} else {
+					bot.sendMessage(message, message.author + ", use this with a link **only** from `goo.gl`.");
+				}
+			}
+			var config = undefined;
+		}
+	},
+//shorts long links to goo.gl links, currently fucked up
+	"shorten": {
+		process: function(bot, message, suffix) {
+			var config = require(jsonFolder + "config.json");
+			var params = {auth: config.google_api_key, resource: {"longUrl": suffix}};
+			if (!suffix) {
+				bot.sendMessage(message, "Please use this command **with** a link.");
+				return;
+			} else {
+				urlshortener.url.insert(params, function(err, response) {
 					if (err) {
 						var toSend = [], count = 0;
 							toSend.push("```");
@@ -532,7 +563,7 @@ exports.commands = {
 							toSend.push("```");
 						bot.sendMessage(message, toSend);
 					} else {
-						bot.sendMessage(message, "Here is your unshortened link: " + response.longUrl);
+						bot.sendMessage(message, message.author + ", here is your shortened link: " + response.id);
 					}
 				});
 			}
@@ -609,6 +640,12 @@ exports.commands = {
   					bot.sendMessage(message, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
   				}
   			}
+  		}
+  	},
+  	"moduletest": {
+  		process: function (bot, message) {
+  			var kahve = require(libFolder + "ModuleTest.js").kahve;
+  			kahve.test.run(bot, message);
   		}
   	}
 };
