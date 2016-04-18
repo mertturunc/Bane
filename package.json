@@ -24,6 +24,6 @@
   },
   "scripts": {
     "main": "node Bane.js",
-    "musicbot": "node BaneMusic-beta.js"
+    "musicbot": "node ./workinprogress/BaneMusic-beta.js"
   }
 }
