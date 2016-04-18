@@ -27,7 +27,7 @@ To-Do List
 -----
         ·emote archive system
         ·sending image with text
-        ·variables for commands for example: "g","google", "search" and "lmgtfy"
+        ·(DONE) variables for commands for example: "g","google", "search" and "lmgtfy"
         ·changing commandwhitelist with command
         ·run file for bot "git stash && git pull && git fetch && node Bane.js"
         ·ffmpeg to opus
