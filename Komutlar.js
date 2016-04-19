@@ -152,7 +152,7 @@ exports.commands = {
 		    }
 		}
 	},
-	//kim ulan bu bot
+//kim ulan bu bot
 	"hakkında": {
 		process: function(bot, msg) {
 			var gitlinkA = getinfo.repository.url.replace("git+", "");
@@ -302,20 +302,15 @@ exports.commands = {
 //			}
 //		}
 //	},
-//dozkana ait twitch kanalı için abone olma linki yollar
-	"abone-dozkan": {
-		process: function(bot, message) {
+//kanala ait twitch kanalı için abone olma linki yollar (IN DEV)
+	"abone": {
+		process: function(bot, message, suffix) {
 			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button ");
-			if (message.mentions.length > -1) { bot.deleteMessage(message); }
-		}
-	},
-//videoyuna ait twitch kanalı için abone olma linki yollar
-	"abone-videoyun": {
-		process: function(bot, message) {
-			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, " Vermiş olduğum linkten abone olabilirsiniz: " + "/n https://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button ");
-			if (message.mentions.length > -1) { bot.deleteMessage(message); }
+			if (suffix && suffix.trim().replace("\"", "") === "dozkan") bot.sendMessage(message.author, "Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button");
+			if (suffix && suffix.trim().replace("\"", "") === "videoyun") bot.sendMessage(message.author, "Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button");
+			if (suffix && suffix.trim().replace("\"", "") === "grimnax") bot.sendMessage(message.author, "Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/grimnax/ticket?ref=below_video_subscribe_button");
+			if (suffix && suffix.trim().replace("\"", "") === "liste") bot.sendMessage(message.author, "Şu anlık verebildiğim adresler: ``dozkan``,``videoyun`` ve ``grimnax``. Eğer Twitch partneri iseniz bot geliştiricilerine başvurup komuta ekletebilirsiniz.");
+			else bot.sendMessage(message.channel, "Lütfen listede bulunan kanallardan birini '*abone' yazdıktan sonra boşluk bırakıp belirt. \n Eğer listeyi görmek istersen ``*abone liste`` yazabilirsin.")
 		}
 	},
 //botu kapatıyorsun ama ayıp değil mi?
@@ -353,7 +348,7 @@ exports.commands = {
 			}
 		}
 	},
-//botun bir sunucuya katılmasını sağlar
+//botun bir sunucuya katılmasını sağlar (ingiliççem yetmedi çevir bunu :C )
 	"katıl": {
 		process: function(bot, message) {
 			var config = require(jsonFolder + "config.json");
@@ -524,7 +519,7 @@ exports.commands = {
 			var suffix1 = suffix.replace("http://" + "https://", "");
 			var suffix2 = suffix1.split("/");
 			if (!suffix) {
-				bot.sendMessage(message, "Please use this command **with** a shortlink from `goo.gl`.");
+				bot.sendMessage(message, "Lütfen 'goo.gl' ile kısaltılmış adresi belirtiniz.");
 				return;
 			} else {
 				if (suffix2.indexOf("goo.gl") > -1) {
@@ -536,11 +531,11 @@ exports.commands = {
 								toSend.push("```");
 							bot.sendMessage(message, toSend);
 						} else {
-							bot.sendMessage(message.author, "Here is your unshortened link: " + response.longUrl);
+							bot.sendMessage(message.author, " : " + response.longUrl);
 						}
 					});
 				} else {
-					bot.sendMessage(message, message.author + ", use this with a link **only** from `goo.gl`.");
+					bot.sendMessage(message, message.author + ", bu komut sadece 'goo.gl' ile kısaltılmış adresler için geçerlidir.");
 				}
 			}
 			var config = undefined;
@@ -552,7 +547,7 @@ exports.commands = {
 			var config = require(jsonFolder + "config.json");
 			var params = {auth: config.google_api_key, resource: {"longUrl": suffix}};
 			if (!suffix) {
-				bot.sendMessage(message, "Please use this command **with** a link.");
+				bot.sendMessage(message, "Lütfen kısaltmak istediğin adresi belirt :(");
 				return;
 			} else {
 				urlshortener.url.insert(params, function(err, response) {
@@ -563,7 +558,7 @@ exports.commands = {
 							toSend.push("```");
 						bot.sendMessage(message, toSend);
 					} else {
-						bot.sendMessage(message, message.author + ", here is your shortened link: " + response.id);
+						bot.sendMessage(message, message.author + " : " + response.id);
 					}
 				});
 			}
@@ -649,4 +644,3 @@ exports.commands = {
   		}
   	}
 };
-
