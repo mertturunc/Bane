@@ -1,6 +1,6 @@
 'use strict';
 
-//var şeysi buraya
+//let things
 let upvote = 0;
 let downvote = 0;
 let voter = [];
@@ -9,6 +9,8 @@ let topicstring = "";
 let votecreator = "";
 let voteserver = "";
 let votechannel = "";
+
+//var things
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var libFolder = "./lib/";
@@ -18,7 +20,7 @@ var getinfo = require("./package.json"); //don't touch this
 var google = require('googleapis');
 var urlshortener = google.urlshortener('v1');
 
-//fonksiyonlar da buraya
+//func things
 function findUser(members, query) {
 	var usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase() == query.toLowerCase() });
 	if (!usr) { usr = members.find(member=>{ return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase().indexOf(query.toLowerCase()) == 0 }); }
@@ -41,7 +43,7 @@ function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
 
 //hülooooooğ
 exports.commands = {
-//videoyun yayın açmış mı lirik yaşıyo mu filan bunları bu kodla öğrenebilirsin
+//twitch yayınlarını kontrol eder
 	"twitch":{
 			process : function(bot,msg,suffix) {
 					try {
@@ -64,7 +66,7 @@ exports.commands = {
 					}
 			}
 	},
-//bırakta senin için gogıllasın -AYAKLI GOOGIL
+//ilkel arama komutu
 	"g": {
 		process: function(bot, msg, suffix) {
 			if (!suffix) { bot.sendMessage(msg, " ``*google`` dedikten sonra arayacağın şeyi yaz. "); return; }
@@ -73,22 +75,7 @@ exports.commands = {
 			bot.sendMessage(msg, "Your search result: http://www.google.com/search?q=" + suffix.join("+") + "&btnI=" );
 		}
 	},
-//botun adı değişir, (discord'un kendi apisi desteklemeyecektir)
-//	"isim-değiş": {
-//		process: function(bot,msg,suffix) {
-//			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-//			if (commandWhitelist.indexOf(msg.sender.id) > -1) {
-//				if(suffix) {
-//					console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
-//					bot.setUsername(suffix, function(error) {
-//						bot.sendMessage(msg.channel, error);
-//					});
-//						bot.deleteMessage(msg);
-//				}
-//			}
-//		}
-//	},
-//çorçik kapkeyk
+//mesaj silme komutu
 	"mesajsil": {
 		process: function(bot,msg,suffix) {
 			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
@@ -152,7 +139,7 @@ exports.commands = {
 		    }
 		}
 	},
-//kim ulan bu bot
+//bot hakkında bilgi verir
 	"hakkında": {
 		process: function(bot, msg) {
 			var gitlinkA = getinfo.repository.url.replace("git+", "");
@@ -174,7 +161,7 @@ exports.commands = {
 			}
 		}
 	},
-//çorçik info kodu, kullanıcının kim olduğunu öğren.
+//kullanıcı hakkında bilgi verir
 	"bilgi": {
 		process: function(bot, msg, suffix) {
 			if (!msg.channel.isPrivate) {
@@ -271,37 +258,13 @@ exports.commands = {
 
 
 	},
-//bane git sayfası
+//botun git sayfası
 	"git": {
 	    	process: function(bot,msg,suffix) {
     	    bot.sendMessage(msg.channel, msg.author + ", https://github.com/mertturunc/Bane");
     	  }
   	},
-//github güncellemesi yapar (YAPAMADI)
-//	"güncelle": {
-//		process: function(bot, message) {
-//			let commandWhiteList = require('./commandwhitelist.json');
-//			if (commandWhiteList.indexOf(message.sender.id) > -1) {
-//				child_process.exec("git stash && git pull && pm2 restart all", puts);
-//				console.log("Update time!");
-//			}
-//		}
-//	},
-//restart (EDEMEDİ)
-//	"restart": {
-//		process: function(bot, message) {
-//			let commandWhiteList = require('./commandwhitelist.json');
-//			try {
-//				if (commandWhiteList.indexOf(message.sender.id) > -1) {
-//					bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
-//					console.log("  Restart time!");
-//				} else {
-//					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
-//				}
-//			} catch (exp) {
-//			}
-//		}
-//	},
+
 //kanala ait twitch kanalı için abone olma linki yollar (IN DEV)
 	"abone": {
 		process: function(bot, message, suffix) {
@@ -313,7 +276,7 @@ exports.commands = {
 			else bot.sendMessage(message.channel, "Lütfen listede bulunan kanallardan birini '*abone' yazdıktan sonra boşluk bırakıp belirt. \n Eğer listeyi görmek istersen ``*abone liste`` yazabilirsin.")
 		}
 	},
-//botu kapatıyorsun ama ayıp değil mi?
+//botu kapar(only dev)
 	"kapa": {
 		process: function(bot, message) {
 			let commandWhiteList = require(jsonFolder + 'commandwhitelist.json');
@@ -348,46 +311,8 @@ exports.commands = {
 			}
 		}
 	},
-//botun bir sunucuya katılmasını sağlar (ingiliççem yetmedi çevir bunu :C )
-	"katıl": {
-		process: function(bot, message) {
-			var config = require(jsonFolder + "config.json");
-			bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
-			bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=40960");
-			var config = undefined;
-		}
-//		process: function(bot, message, suffix) {
-//			let query = suffix;
-//			let sender = message.author.username;
-//			if (!query) {
-//				bot.sendMessage(message.channel, "Lütfen davet linkini belirt.");
-//				return;
-//			}
-//			let invite = message.content.split(" ")[1];
-//			bot.joinServer(invite, function(error, server) {
-//				if (error) {
-//					bot.sendMessage(message.channel, "Sanırım birşeyler ters gitti: " + error);
-//				} else {
-//					bot.sendMessage(message.channel, "Tamamdır, birazdan buradayım: " + server);
-//					// messageArray çalışmıyor, halp //
-//					let messageArray = [];
-//					messageArray.push(bot.user.username + "burada, bu sunucuya " + message.author + "tarafından alındım.");
-//					messageArray.push("İstersen `" + trigger + "``*yardım`` yaz ve neler yapabileceğimi gör.");
-//					messageArray.push("Beni burada istemiyorsan lütfen " + AuthDetails.discordjs_trigger + "komutunu kullan.");
-//					bot.sendMessage(server.defaultChannel, messageArray);
-//					console.log("Sunucuya katılma zamanı: " + server)
-//				}
-//			});
-//		}
-  	},
-//en gereksiz kod
-	"helö": {
-		process: function(bot, message) {
-			bot.sendMessage(message.channel, "**Helö?**", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 600}); });
-			if (message.mentions.length > -1) { bot.deleteMessage(message); };
-		}
-	},
-//ocd mania linux
+/*komikli pngler
+ocd mania linux*/
 	"linuxpls": {
 		process: function(bot, message) {
 			bot.sendFile(message.channel, picFolder + "linuxgemini.png");
@@ -395,13 +320,7 @@ exports.commands = {
 			console.log("linux pls, Komutu kullanan: " + message.sender.username);
 		}
 	},
-//message delete için oluşturduğum test komutu
-	"explode": {
-		process: function(bot, message) {
-			bot.sendMessage(message, "BOOM!", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 100}); });
-		}
-	},
-//avatar filan veriyo
+//avatar adresini yollayan komut
 	"avatar": {
 		process: function(bot, msg, suffix) {
 			if (msg.channel.isPrivate) {
@@ -435,7 +354,7 @@ exports.commands = {
 					if (msg.mentions.length > -1) { bot.deleteMessage(msg); }
 		}
 	},
-//düzgün çalışan bir eval
+//eval komutu
 	"eval": {
 		process: function(bot, message, suffix) {
 			let blockedEval = require(jsonFolder + 'blockedeval.json');
@@ -511,7 +430,7 @@ exports.commands = {
 			if (message.mentions.length > -1) { bot.deleteMessage(message); }
 		}
 	},
-//unshorts goo.gl links
+//goo.gl linklerini tekrardan uzatır
 	"unshort": {
 		process: function(bot, message, suffix) {
 			var config = require(jsonFolder + "config.json");
@@ -541,7 +460,7 @@ exports.commands = {
 			var config = undefined;
 		}
 	},
-//shorts long links to goo.gl links, currently fucked up
+//linkleri goo.gl ile kısaltır
 	"shorten": {
 		process: function(bot, message, suffix) {
 			var config = require(jsonFolder + "config.json");
@@ -565,7 +484,7 @@ exports.commands = {
 			var config = undefined;
 		}
 	},
-//OYLAMAĞĞĞ
+//oylama yapılmasını sağlar
 	"yenioylama": {
 		process: function (bot, msg, suffix) {
 			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
@@ -644,3 +563,67 @@ exports.commands = {
   		}
   	}
 };
+
+/*
+belediye çöplüğü
+
+//github güncellemesi yapar (YAPAMADI)
+	"güncelle": {
+		process: function(bot, message) {
+			let commandWhiteList = require('./commandwhitelist.json');
+			if (commandWhiteList.indexOf(message.sender.id) > -1) {
+				child_process.exec("git stash && git pull && pm2 restart all", puts);
+				console.log("Update time!");
+			}
+		}
+	},
+//restart (EDEMEDİ)
+	"restart": {
+		process: function(bot, message) {
+			let commandWhiteList = require('./commandwhitelist.json');
+			try {
+				if (commandWhiteList.indexOf(message.sender.id) > -1) {
+					bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
+					console.log("  Restart time!");
+				} else {
+					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
+				}
+			} catch (exp) {
+			}
+		}
+	},
+
+	//botun bir sunucuya katılmasını sağlar(DI)
+		"katıl": {
+			process: function(bot, message) {
+				var config = require(jsonFolder + "config.json");
+				bot.sendMessage(message.channel, " :postbox: ", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1200}); });
+				bot.sendMessage(message.author, "Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=40960");
+				var config = undefined;
+			}
+			process: function(bot, message, suffix) {
+				let query = suffix;
+				let sender = message.author.username;
+				if (!query) {
+					bot.sendMessage(message.channel, "Lütfen davet linkini belirt.");
+					return;
+				}
+				let invite = message.content.split(" ")[1];
+				bot.joinServer(invite, function(error, server) {
+					if (error) {
+						bot.sendMessage(message.channel, "Sanırım birşeyler ters gitti: " + error);
+					} else {
+						bot.sendMessage(message.channel, "Tamamdır, birazdan buradayım: " + server);
+						// messageArray çalışmıyor, halp //
+						let messageArray = [];
+						messageArray.push(bot.user.username + "burada, bu sunucuya " + message.author + "tarafından alındım.");
+						messageArray.push("İstersen `" + trigger + "``*yardım`` yaz ve neler yapabileceğimi gör.");
+						messageArray.push("Beni burada istemiyorsan lütfen " + AuthDetails.discordjs_trigger + "komutunu kullan.");
+						bot.sendMessage(server.defaultChannel, messageArray);
+						console.log("Sunucuya katılma zamanı: " + server)
+					}
+				});
+			}
+	  	},
+
+*/
