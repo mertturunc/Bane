@@ -27,14 +27,10 @@ To-Do List
 -----
 
 - [x] Variables for commands for example: "g","google", "search" and "lmgtfy"
-- [x] Github Repo
-- [x] Help Me!
-- [x] Twitch
 - [ ] Emote system
 - [ ] Sending image with text
 - [ ] One click uptade and run file
 - [ ] Chat logs
-- [ ] Logs
-- [ ] Music bot
+- [ ] Music bot (maybe)
 - [ ] Advanced Commands
 - [ ] Moderation
