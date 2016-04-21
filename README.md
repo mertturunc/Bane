@@ -25,13 +25,16 @@ to run the script.
 
 To-Do List
 -----
-        ·emote archive system
-        ·sending image with text
-        ·(DONE) variables for commands for example: "g","google", "search" and "lmgtfy"
-        ·changing commandwhitelist with command
-        ·run file for bot "git stash && git pull && git fetch && node Bane.js"
-        ·ffmpeg to opus
-        ·youtube search for music bot
-        ·need to translate
-        ·need to add finduser function to mesajsil(purge) command
-        ·chatlog saver
+
+- [x] Variables for commands for example: "g","google", "search" and "lmgtfy"
+- [x] Github Repo
+- [x] Help Me!
+- [x] Twitch
+- [ ] Emote system
+- [ ] Sending image with text
+- [ ] One click uptade and run file
+- [ ] Chat logs
+- [ ] Logs
+- [ ] Music bot
+- [ ] Advanced Commands
+- [ ] Moderation
