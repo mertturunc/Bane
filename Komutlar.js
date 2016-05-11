@@ -667,15 +667,15 @@ exports.commands = {
   			var checkConnection = bot.voiceConnections.get('voiceChannel', vChannel);
   			if (!suffix) {
   				bot.sendMessage(message, message.author + ", herhangi bir şey belirtmedin. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
-  				bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı: `*oynat <klip adı>`");
+  				bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
   			} else {
   				if (suffix === "liste") {
   					bot.sendMessage(message, ":postbox:", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1453}); });
-  					bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+  					bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
   				} else {
   					if (voices[suffix] === undefined) {
   						bot.sendMessage(message, message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
-  						bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı: `*oynat <klip adı>`");
+  						bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
   					} else {
 						if (vChannel === null) {
   							bot.sendMessage(message, message.author + ", herhangi bir ses kanalına bağlı değilsin.");
