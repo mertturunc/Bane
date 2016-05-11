@@ -11,6 +11,10 @@ Usage
 -----
         git clone https://github.com/mertturunc/Bane.git
         cd ./Bane/
+        # the line below is for Ubuntu 14.04
+        sudo add-apt-repository ppa:mc3man/trusty-media && sudo apt-get update && sudo apt-get install ffmpeg
+        # the line below is for systems that has an older version of Ubuntu
+        sudo apt-get install ffmpeg
         npm install
 
 Then, make your config.json based off from config-base.json. *(We won't provide any API support.)* After done all that,
