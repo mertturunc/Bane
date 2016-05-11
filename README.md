@@ -5,7 +5,7 @@ A Discord bot based on [CommunityBot](https://github.com/OneMansGlory/CommunityB
 
 Currently in pre-alpha stages.
 
-![codeship](https://codeship.com/projects/4c86ea90-d689-0133-5867-2e9d1cff2918/status?branch=master) [![version](https://img.shields.io/badge/version-0.0.2-green.svg?style=flat-square)](https://github.com/mertturunc/Bane/releases)
+![codeship](https://codeship.com/projects/4c86ea90-d689-0133-5867-2e9d1cff2918/status?branch=master) [![version](https://img.shields.io/badge/version-0.0.3-green.svg?style=flat-square)](https://github.com/mertturunc/Bane/releases)
 
 Usage
 -----
@@ -31,6 +31,6 @@ To-Do List
 - [ ] Sending image with text
 - [ ] One click uptade and run file
 - [ ] Chat logs
-- [ ] Music bot (maybe)
-- [ ] Advanced Commands
+- [ ] Music bot (partially done)
+- [ ] Advanced Commands (partially done)
 - [ ] Moderation
