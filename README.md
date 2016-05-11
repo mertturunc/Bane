@@ -5,7 +5,7 @@ A Discord bot based on [CommunityBot](https://github.com/OneMansGlory/CommunityB
 
 Currently in pre-alpha stages.
 
-[ ![Codeship Status for mertturunc/Bane](https://codeship.com/projects/4c86ea90-d689-0133-5867-2e9d1cff2918/status?branch=master)](https://codeship.com/projects/142773) [![version](https://img.shields.io/github/release/mertturunc/Bane.svg?style=flat-square)](https://github.com/mertturunc/Bane/releases)
+[ ![Codeship Status for mertturunc/Bane](https://codeship.com/projects/4c86ea90-d689-0133-5867-2e9d1cff2918/status?branch=master)](https://codeship.com/projects/142773) [![version](https://img.shields.io/github/release/mertturunc/Bane.svg)](https://github.com/mertturunc/Bane/releases)
 
 Usage
 -----
