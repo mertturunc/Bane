@@ -7,11 +7,13 @@ let voter = [];
 let votebool = false;
 let topicstring = "";
 let votecreator = "";
+let votecreatorFull = "";
 let voteserver = "";
 let votechannel = "";
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var libFolder = "./lib/";
+var voiceFolder = "./voices/";
 var TwitchClient = require("node-twitchtv");
 var ttvc = new TwitchClient("");
 var getinfo = require("./package.json"); //don't touch this
@@ -43,26 +45,26 @@ function updateCmdPerms() {updateJSON(jsonFolder + "commandwhitelist.json");};
 exports.commands = {
 //videoyun yayın açmış mı lirik yaşıyo mu filan bunları bu kodla öğrenebilirsin
 	"twitch":{
-			process : function(bot,msg,suffix) {
-					try {
-							suffix = suffix.replace(' ', '');
-							ttvc.streams({ channel: suffix }, function(err, response) {
-									if(err) throw new Error (err);
-									if(response.stream == null) {
-											bot.sendMessage(msg.channel, "**Yayın durumu:**" + " Kapalı");
-									} else {
-											var rt = "**Yayın durumu:** " + "Açık" + "\n";
-											 	rt += "**Başlık:** " + response.stream.channel.status + "\n";
-												rt += "**Oyun:** " + response.stream.game + "\n";
-												rt += "**İzleyici:** " + response.stream.viewers + "\n";
-												rt += "**Link:**" + "`` " + response.stream.channel.url + " ``\n";
-											bot.sendMessage(msg.channel, rt);
-									}
-							});
-					} catch(e) {
-							console.log(msg.channel + "isim kanalda şu hata oluştu:" + e);
+		process : function(bot,msg,suffix) {
+			try {
+				suffix = suffix.replace(' ', '');
+				ttvc.streams({ channel: suffix }, function(err, response) {
+					if(err) throw new Error (err);
+					if(response.stream == null) {
+							bot.sendMessage(msg.channel, "**Yayın durumu:**" + " Kapalı");
+					} else {
+						var rt = "**Yayın durumu:** " + "Açık" + "\n";
+						 	rt += "**Başlık:** " + response.stream.channel.status + "\n";
+							rt += "**Oyun:** " + response.stream.game + "\n";
+							rt += "**İzleyici:** " + response.stream.viewers + "\n";
+							rt += "**Link:**" + "`` " + response.stream.channel.url + " ``\n";
+						bot.sendMessage(msg.channel, rt);
 					}
+				});
+			} catch(e) {
+				console.log(msg.channel + "isim kanalda şu hata oluştu:" + e);
 			}
+		}
 	},
 //bırakta senin için gogıllasın -AYAKLI GOOGIL
 	"g": {
@@ -574,6 +576,7 @@ exports.commands = {
     			if (votebool == true) { bot.sendMessage(msg, "Hali hazırda bir oylama işlemde."); return; }
     			topicstring = suffix;
     			votecreator = msg.sender.username;
+    			votecreatorFull = msg.sender.id
     			voteserver = msg.channel.server.name
     			votechannel = msg.channel.name
     			bot.sendMessage(msg, "Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
@@ -606,7 +609,7 @@ exports.commands = {
 	"oylamayasonver": {
 		process: function (bot, msg, suffix) {
 			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-			if (commandWhitelist.indexOf(msg.sender.id) > -1) {
+			if (msg.sender.id === votecreatorFull) {
 				bot.sendMessage(msg, "`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`");
 				upvote = 0;
 				downvote = 0;
@@ -614,10 +617,24 @@ exports.commands = {
 				votebool = false;
 				topicstring = "";
 				votecreator = "";
+				votecreatorFull = "";
 				votechannel = "";
 				voteserver = "";
 			} else {
-				bot.sendMessage(msg, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+				if (commandWhitelist.indexOf(msg.sender.id) > -1) {
+					bot.sendMessage(msg, "`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`");
+					upvote = 0;
+					downvote = 0;
+					voter = [];
+					votebool = false;
+					topicstring = "";
+					votecreator = "";	
+					votecreatorFull = "";
+					votechannel = "";
+					voteserver = "";
+				} else {
+					bot.sendMessage(msg, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+				}
 			}
     	}
   	},
@@ -641,6 +658,39 @@ exports.commands = {
   		process: function (bot, message) {
   			var kahve = require(libFolder + "ModuleTest.js").kahve;
   			kahve.test.run(bot, message);
+  		}
+  	},
+  	"oynat": {
+  		process: function (bot, message, suffix) {
+  			var voices = require(voiceFolder + "voices.json");
+  			var vChannel = message.sender.voiceChannel;
+  			var checkConnection = bot.voiceConnections.get('voiceChannel', vChannel);
+  			if (!suffix) {
+  				bot.sendMessage(message, message.author + ", herhangi bir şey belirtmedin. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+  				bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı: `*oynat <klip adı>`");
+  			} else {
+  				if (suffix === "liste") {
+  					bot.sendMessage(message, ":postbox:", function(error, wMessage) { bot.deleteMessage(wMessage, {"wait": 1453}); });
+  					bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+  				} else {
+  					if (voices[suffix] === undefined) {
+  						bot.sendMessage(message, message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+  						bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.list + "```\nKomut kullanımı: `*oynat <klip adı>`");
+  					} else {
+						if (vChannel === null) {
+  							bot.sendMessage(message, message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+  						} else {
+  							if (checkConnection === null) {
+  								bot.joinVoiceChannel(vChannel).then(function(connection){
+  									connection.playFile(voiceFolder + voices[suffix], {}, (error, i) => {i.on("end", () => { bot.leaveVoiceChannel(vChannel); }); });
+  								});
+  							} else {
+  								return;
+  							}
+  						}
+  					}
+  				}
+  			}
   		}
   	}
 };

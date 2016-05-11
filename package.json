@@ -1,6 +1,6 @@
 {
   "name": "Bane",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Ne biçim bot bu anlamadım Kappa.",
   "readme": "README.md",
   "maintainers": [
@@ -14,13 +14,13 @@
   },
   "license": "GPL-3.0",
   "dependencies": {
+    "discord.js": "hydrabolt/discord.js#indev",
+    "ffmpeg": "0.0.4",
+    "googleapis": ">=4.0.0",
     "node-twitchtv": "jbueza/node-twitchtv",
-    "discord.js": "^6.0.0",
     "request": ">=2.58.0",
     "underscore": "1.8.x",
-    "ytdl-core": "0.7.10",
-    "ffmpeg": "0.0.4",
-    "googleapis": ">=4.0.0"
+    "ytdl-core": "0.7.10"
   },
   "scripts": {
     "main": "node Bane.js",

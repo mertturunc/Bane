@@ -15,14 +15,14 @@ const config = require(jsonFolder + 'config.json');
 
 let commands = require('./Komutlar.js').commands;
 let aliases = require(jsonFolder + "Aliases.json");
-let bot = new Discord.Client();
+let bot = new Discord.Client({autoReconnect: true});
 
 bot.on("ready", function () {
 	console.log("Başladı! Şu an " + bot.channels.length + " adet yazı kanalına hizmet veriyorum.");
 });
 
 bot.on("disconnected", function () {
-	console.log("Bağlantı kesildi. Kapanıyor..");
+	console.log("Bağlantı kesildi. Kapatılıyor...");
 	process.exit(0);
 });
 
