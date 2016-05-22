@@ -21,11 +21,6 @@ bot.on("ready", function () {
 	console.log("Başladı! Şu an " + bot.channels.length + " adet yazı kanalına hizmet veriyorum.");
 });
 
-bot.on("disconnected", function () {
-	console.log("Bağlantı kesildi. Kapatılıyor...");
-	process.exit(0);
-});
-
 bot.on("error", function (error) {
 	console.log("Bu hata ile karşılaştım:  `` " + error + " `` "
         );
