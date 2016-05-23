@@ -75,21 +75,6 @@ exports.commands = {
 			bot.sendMessage(msg, "Your search result: http://www.google.com/search?q=" + suffix.join("+") + "&btnI=" );
 		}
 	},
-//botun adı değişir, (discord'un kendi apisi desteklemeyecektir)
-//	"isim-değiş": {
-//		process: function(bot,msg,suffix) {
-//			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-//			if (commandWhitelist.indexOf(msg.sender.id) > -1) {
-//				if(suffix) {
-//					console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
-//					bot.setUsername(suffix, function(error) {
-//						bot.sendMessage(msg.channel, error);
-//					});
-//						bot.deleteMessage(msg);
-//				}
-//			}
-//		}
-//	},
 //çorçik kapkeyk
 	"mesajsil": {
 		process: function(bot,msg,suffix) {
@@ -279,31 +264,6 @@ exports.commands = {
     	    bot.sendMessage(msg.channel, msg.author + ", https://github.com/mertturunc/Bane");
     	  }
   	},
-//github güncellemesi yapar (YAPAMADI)
-//	"güncelle": {
-//		process: function(bot, message) {
-//			let commandWhiteList = require('./commandwhitelist.json');
-//			if (commandWhiteList.indexOf(message.sender.id) > -1) {
-//				child_process.exec("git stash && git pull && pm2 restart all", puts);
-//				console.log("Update time!");
-//			}
-//		}
-//	},
-//restart (EDEMEDİ)
-//	"restart": {
-//		process: function(bot, message) {
-//			let commandWhiteList = require('./commandwhitelist.json');
-//			try {
-//				if (commandWhiteList.indexOf(message.sender.id) > -1) {
-//					bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
-//					console.log("  Restart time!");
-//				} else {
-//					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
-//				}
-//			} catch (exp) {
-//			}
-//		}
-//	},
 //kanala ait twitch kanalı için abone olma linki yollar (IN DEV)
 	"abone": {
 		process: function(bot, message, suffix) {
@@ -628,7 +588,7 @@ exports.commands = {
 					voter = [];
 					votebool = false;
 					topicstring = "";
-					votecreator = "";	
+					votecreator = "";
 					votecreatorFull = "";
 					votechannel = "";
 					voteserver = "";
