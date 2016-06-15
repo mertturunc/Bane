@@ -19,6 +19,7 @@ let bot = new Discord.Client({autoReconnect: true});
 
 bot.on("ready", function () {
 	console.log("Başladı! Şu an " + bot.channels.length + " adet yazı kanalına hizmet veriyorum.");
+	setTimeout(function(){bot.setStatus("online", config.startupGame);}, 2000);
 });
 
 bot.on("error", function (error) {
@@ -38,4 +39,3 @@ bot.on("message", function (message) {
 });
 
 bot.loginWithToken(config.token);
-setTimeout(function(){bot.setStatus("online", config.startupGame);}, 2000);
