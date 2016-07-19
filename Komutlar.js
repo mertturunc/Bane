@@ -10,6 +10,7 @@ let votecreator = "";
 let votecreatorFull = "";
 let voteserver = "";
 let votechannel = "";
+let ctc = [];
 var jsonFolder = "./json/";
 var picFolder = "./photos/";
 var libFolder = "./lib/";
