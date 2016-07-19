@@ -620,11 +620,33 @@ exports.commands = {
   			kahve.test.run(bot, message);
   		}
   	},
+//airhorn functionality is here, with its final cancer code
   	"oynat": {
   		process: function (bot, message, suffix) {
   			var voices = require(voiceFolder + "voices.json");
   			var vChannel = message.sender.voiceChannel;
-  			var checkConnection = bot.voiceConnections.get('voiceChannel', vChannel);
+  			var vServer = message.channel.server.id;
+  			var checkConnectionOnChannel = bot.voiceConnections.get('voiceChannel', vChannel);
+  			if (checkConnectionOnChannel === null) {
+  				if (ctc.indexOf(vServer) > -1) {
+  					var checkConnectionOnServer = "yes";
+  					/*
+  					if there is not a connection in the requested voice channel and the server id matches with the array,
+  					this part sets the variable as "connected to the requested server before"
+  					*/
+  				} else {
+  					var checkConnectionOnServer = "no";
+  					/*
+  					this sets the variable as "not connected to the requested server before"
+  					*/
+  				};
+  			} else {
+  				var checkConnectionOnServer = "yes";
+  				/*
+  				if there is a connection in requested channel, we mark the variable as
+  				"connected to the requested server before"
+  				*/
+  			}; // and this wasn't the complete cancerous code
   			if (!suffix) {
   				bot.sendMessage(message, message.author + ", herhangi bir şey belirtmedin. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
   				bot.sendMessage(message.author, "Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
@@ -640,9 +662,24 @@ exports.commands = {
 						if (vChannel === null) {
   							bot.sendMessage(message, message.author + ", herhangi bir ses kanalına bağlı değilsin.");
   						} else {
-  							if (checkConnection === null) {
+  							if (checkConnectionOnServer === "no") {
+  								/*
+  								this part is the cancer
+  								what basically does is that it gets the requested server id to another variable (avoiding fuckups with outside vars)
+  								pushes that variable to the control array (ctc)
+  								and when "end" signal comes, it removes the variable from the array
+  								making the server re-connectable.
+  								*/
+  								var controlServ = message.channel.server.id; // outside variables may fuck up the code
+  								ctc.push(controlServ); // pushed the requested server id
   								bot.joinVoiceChannel(vChannel).then(function(connection){
-  									connection.playFile(voiceFolder + voices[suffix], {}, (error, i) => {i.on("end", () => { bot.leaveVoiceChannel(vChannel); }); });
+  									connection.playFile(voiceFolder + voices[suffix], {}, (error, i) => {
+  										i.on("end", () => {
+  											bot.leaveVoiceChannel(vChannel);
+  											var end = ctc.indexOf(controlServ); // we will check that if the control id is still there
+  											if(end != -1) {ctc.splice(end, 1);}; // and remove it
+  										});
+  									});
   								});
   							} else {
   								return;
