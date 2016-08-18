@@ -15,7 +15,7 @@ const config = require(jsonFolder + 'config.json');
 
 let commands = require('./Komutlar.js').commands;
 let aliases = require(jsonFolder + "Aliases.json");
-let bot = new Discord.Client({autoReconnect: true});
+let bot = new Discord.Client({autoReconnect: true, forceFetchUsers: true});
 
 bot.on("ready", function () {
 	console.log("Başladı! Şu an " + bot.channels.length + " adet yazı kanalına hizmet veriyorum.");
