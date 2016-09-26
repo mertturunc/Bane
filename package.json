@@ -14,7 +14,7 @@
   },
   "license": "GPL-3.0",
   "dependencies": {
-    "discord.js": "hydrabolt/discord.js#indev-old",
+    "discord.js": "hydrabolt/discord.js",
     "ffmpeg": "0.0.4",
     "googleapis": ">=4.0.0",
     "node-twitchtv": "jbueza/node-twitchtv",
