@@ -19,14 +19,14 @@ let bot = new Discord.Client({
     fetch_all_members: true
 });
 
-bot.on("ready", function() {
-    console.log("Başladı! Şu an " + bot.guilds.size + " adet sunucuya hizmet veriyorum.");
+bot.on("ready", () => {
+    console.log("Başladı! Şu an " + bot.guilds.size + " adet sunucuya (ve " + bot.channels.size + " kanala) hizmet veriyorum.");
     setTimeout(function() {
         bot.user.setStatus("online", config.startupGame);
     }, 2000)
 });
 
-bot.on("error", function(error) {
+bot.on("error", (error) => {
     console.log("Bu hata ile karşılaştım:  `` " + error + " `` ");
 });
 
