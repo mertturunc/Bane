@@ -1,5 +1,3 @@
-DO NOT USE THIS BOT UNTIL THIS TITLE DISAPPEARS
-=========================
 Bane Elemental
 =========================
 
