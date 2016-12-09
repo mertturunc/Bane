@@ -2,7 +2,6 @@
 
 const Discord = require('discord.js');
 const fs = require('fs');
-const trigger = "*";
 var jsonFolder = "./json/";
 
 try {
@@ -11,7 +10,9 @@ try {
     console.log("config.json bulunamadı. config-base.json dosyasından kopyalanıyor...");
     fs.writeFileSync(jsonFolder + 'config.json', fs.readFileSync(jsonFolder + 'config-base.json'));
 }
-const config = require(jsonFolder + 'config.json');
+
+var config = require(jsonFolder + 'config.json');
+const trigger = config.trigger;
 
 let commands = require('./Komutlar.js').commands;
 let aliases = require(jsonFolder + "Aliases.json");
@@ -22,7 +23,8 @@ let bot = new Discord.Client({
 bot.on("ready", () => {
     console.log("Başladı! Şu an " + bot.guilds.size + " adet sunucuya (ve " + bot.channels.size + " kanala) hizmet veriyorum.");
     setTimeout(function() {
-        bot.user.setStatus("online", config.startupGame);
+        bot.user.setStatus("online");
+		setTimeout(function(){bot.user.setGame(config.startupGame);}, 833);
     }, 2000)
 });
 
@@ -43,6 +45,8 @@ bot.on("message", message => {
                 commands[aliasEd].process(bot, message, suffix);
             } else {}
         };
+    } else {
+    	return;
     }
 });
 
