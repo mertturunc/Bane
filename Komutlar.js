@@ -403,7 +403,7 @@ exports.commands = {
             var messages = ["**PONG**", "Pong! diyeceğimi sandın değil mi?", "Hala buradayım..", "**...**", "ping"];
             var random = messages[Math.floor(Math.random() * messages.length)];
             msg.channel.sendMessage(random).then(sentMsg => {
-                sentMsg.edit(random + "\t|\t Şu kadar sürdü: " + (sentMsg.timestamp - msg.timestamp) + "ms")
+                sentMsg.edit(random + "\t|\t Şu kadar sürdü: " + (sentMsg.createdTimestamp - msg.createdTimestamp) + "ms")
             });
         }
     },
@@ -936,14 +936,14 @@ exports.commands = {
     //airhorn functionality is here. ayy (API REDONE)
     "oynat": {
         process: function(bot, message, suffix) {
+        	let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             var voices = require(voiceFolder + "voices.json");
+            var blacklistedVoices = require(voiceFolder + "blacklist.json");
             var vChannel = message.guild.member(message.author).voiceChannel;
             var checkConnectionOnGuild = bot.voiceConnections.get(message.guild.id, 'VoiceConnection');
             if (!checkConnectionOnGuild) {
-                console.log("channel check returned null");
 				var checkConnectionOnGuild = "no";
             } else {
-                console.log("channel check returned yes");
                 var checkConnectionOnGuild = "yes";
             };
             if (!suffix) {
@@ -960,21 +960,40 @@ exports.commands = {
                         message.channel.sendMessage(message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
                         message.author.sendMessage("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
                     } else {
-                        if (!vChannel) {
-                            message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
-                        } else {
-                            if (checkConnectionOnGuild === "no") {
-                                vChannel.join().then(connection => {
-                                    const dispatcher = connection.playFile(voiceFolder + voices[suffix]);
-                                    dispatcher.once("end", () => {
-                                        vChannel.leave();
-                                        console.log("playing stopped");
-                                    });
-                                });
-                            } else {
-                                return;
-                            }
-                        }
+                    	if (voices[suffix].indexOf("blacklist") !== -1) {
+                    		if (commandWhitelist.indexOf(message.author.id) > -1) {
+                    			var resulter = voices[suffix]
+                    			if (!vChannel) {
+                            		message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                        		} else {
+                            		if (checkConnectionOnGuild === "no") {
+                                		vChannel.join().then(connection => {
+                                    		const dispatcher = connection.playFile(voiceFolder + blacklistedVoices[resulter]);
+                                    		dispatcher.once("end", () => {
+                                        		vChannel.leave();
+                                    		});
+                                		});
+                            		} else {
+                                		return;
+                            		}
+                        		}
+                    		}
+                    	} else {
+                    		if (!vChannel) {
+                            	message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                        	} else {
+                            	if (checkConnectionOnGuild === "no") {
+                                	vChannel.join().then(connection => {
+                                    	const dispatcher = connection.playFile(voiceFolder + voices[suffix]);
+                                    	dispatcher.once("end", () => {
+                                        	vChannel.leave();
+                                    	});
+                                	});
+                            	} else {
+                                	return;
+                            	}
+                        	}
+                    	}
                     }
                 }
             }
