@@ -8,7 +8,7 @@ process.stdout.write('\033c');
 //}
 
 // <Variables> {
-var jsonFolder      = './json/MusicBot/',
+var jsonFolder      = '../json/MusicBot/',
     Permissions     = {},
     alias           = {},
     musicFree       = true,
