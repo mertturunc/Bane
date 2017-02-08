@@ -781,7 +781,7 @@ exports.commands = {
             });
             var config = require(jsonFolder + "config.json");
             var params = {
-                auth: onfig.google_api_key,
+                auth: config.google_api_key,
                 shortUrl: cachedUnshort
             };
             var suffix1 = cachedUnshort.replace("http://" + "https://", "");
@@ -1016,78 +1016,6 @@ exports.commands = {
                             }
                         }
                     }
-                }
-            }
-        }
-    },
-    "stealth": {
-        process: function (bot, message, suffix) {
-            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            let cached = suffix;
-            var localErrorCount = 0;
-            if (!suffix) {
-                return;
-            } else {
-                if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    message.delete().catch(e => {
-                        localErrorCount += 1;
-                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-                            localErrorCount += 1;
-                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-                                localErrorCount += 1;
-                                console.log("I done goofed");
-                                return;
-                            });
-                            return;
-                        });
-                        return;
-                    });
-                    if (localErrorCount > 0) {
-                        return;
-                    } else {
-                        message.channel.sendMessage(cached).then(wMessage => {
-                            wMessage.delete(11);
-                        });
-                    }
-                } else {
-                    return;
-                }
-            }
-        }
-    },
-    "ttstealth": {
-        process: function (bot, message, suffix) {
-            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            let cached = suffix;
-            var localErrorCount = 0;
-            if (!suffix) {
-                return;
-            } else {
-                if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    message.delete().catch(e => {
-                        localErrorCount += 1;
-                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-                            localErrorCount += 1;
-                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-                                localErrorCount += 1;
-                                console.log("I done goofed");
-                                return;
-                            });
-                            return;
-                        });
-                        return;
-                    });
-                    if (localErrorCount > 0) {
-                        return;
-                    } else {
-                        message.channel.sendMessage(cached, {
-                            tts: true
-                        }).then(wMessage => {
-                            wMessage.delete(11);
-                        });
-                    }
-                } else {
-                    return;
                 }
             }
         }
