@@ -123,7 +123,7 @@ exports.commands = {
     //çorçik kapkeyk (NEEDS NODE 7 OR ABOVE, WITH --harmony FLAG, USE npm run-script main TO RUN THE BOT WITH THIS COMMAND)
     "mesajsil": {
         process: async function (bot, message) {
-            const user = message.mentions.users.first().toString();
+            const user = message.mentions.users.first();
             let amount = parseInt(message.content.split(' ').pop());
 
             if (!message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
@@ -140,13 +140,13 @@ exports.commands = {
             if (!amount) return message.reply('Bir miktar belirtin.');
 
             if (user) {
-                const messages = (await message.channel.fetchMessage({
+                const messages = (await message.channel.fetchMessages({
                         limit: amount
                     }))
                     .filter(m => m.author.id === user.id)
                     .filter(m => m.deletable);
 
-                if (!message.size) return [];
+                if (!messages.size) return [];
 
                 if (messages.size === 1) {
                     return [await messages.first().delete()];
