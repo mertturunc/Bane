@@ -22,23 +22,6 @@ var google = require('googleapis');
 var urlshortener = google.urlshortener('v1');
 
 //fonksiyonlar da buraya
-function findUser(members, query) { //NEED HALP
-    var usr = members.find(member => {
-        return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase() == query.toLowerCase()
-    });
-    if (!usr) {
-        usr = members.find(member => {
-            return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase().indexOf(query.toLowerCase()) == 0
-        });
-    }
-    if (!usr) {
-        usr = members.find(member => {
-            return (member === undefined || member.username == undefined) ? false : member.username.toLowerCase().indexOf(query.toLowerCase()) > -1
-        });
-    }
-    return usr || false;
-};
-
 function numcon(str) {
     if (/^[0-9]+$/.test(str)) {
         return true;
@@ -106,20 +89,20 @@ exports.commands = {
     /* REMOVED COMMAND
     //botun adı değişir, (discord'un kendi apisi desteklemeyecektir)
     "isim-değiş": {
-    	process: function(bot,msg,suffix) {
-    		let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-    		if (commandWhitelist.indexOf(msg.sender.id) > -1) {
-    			if(suffix) {
-    				console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
-    				bot.setUsername(suffix, function(error) {
-    					bot.sendMessage(msg.channel, error);
-    				});
-    					bot.deleteMessage(msg);
-    			}
-    		}
-    	}
+        process: function(bot,msg,suffix) {
+            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+            if (commandWhitelist.indexOf(msg.sender.id) > -1) {
+                if(suffix) {
+                    console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
+                    bot.setUsername(suffix, function(error) {
+                        bot.sendMessage(msg.channel, error);
+                    });
+                        bot.deleteMessage(msg);
+                }
+            }
+        }
     },
-	*/
+    */
     //çorçik kapkeyk (NEEDS NODE 7 OR ABOVE, WITH --harmony FLAG, USE npm run-script main TO RUN THE BOT WITH THIS COMMAND)
     "mesajsil": {
         process: async function (bot, message) {
@@ -184,206 +167,85 @@ exports.commands = {
                 toSend2.push("**Versiyon:** " + getinfo.version);
                 toSend2.push("**GitHub:** " + gitlinkB);
                 toSend2.push("**Komutlar:**" + " ``*yardım`` yazarak komutları öğrenebilirsin.");
-				msg.channel.sendMessage(toSend2);
+                msg.channel.sendMessage(toSend2);
             }
         }
     },
     */
-    //çorçik info kodu, kullanıcının kim olduğunu öğren. (NEEDS MORE WORK)
+    //info kodu, kullanıcının kim olduğunu öğren. (API REDONE)
     "bilgi": {
-        process: function(bot, msg, suffix) {
-            msg.channel.sendMessage("Komut bakım nedeniyle devre dışı.");
-            /*
-            if (!msg.channel.isPrivate) {
-                if (suffix) {
-                    if (msg.mentions.users.length > 0) {
-                        if (msg.everyoneMentioned) {
-                            bot.sendMessage(msg, msg.author + ", lütfen bu komutu kullanma tamam mı?", function(error, wMessage) {
-                                bot.deleteMessage(wMessage, {
-                                    "wait": 24000
-                                });
-                            });
-                            return;
-                        }
-                        if (msg.mentions.users.length > 4) {
-                            bot.sendMessage(msg, "Komutun kullanımı 4 kişi ile limitlidir.", function(error, wMessage) {
-                                bot.deleteMessage(wMessage, {
-                                    "wait": 24000
-                                });
-                            });
-                            return;
-                        }
-                        msg.mentions.map(function(usr) {
-                            var toSend = [],
-                                count = 0;
-                            toSend.push(usr.username + " #" + usr.discriminator + " hakkındaki bilgiler:");
-                            if (usr.bot === true) {
-                                var isUserABot = "Evet";
-                            } else {
-                                if (usr.bot === false) {
-                                    var isUserABot = "Hayır";
-                                } else {
-                                    var isUserABot = "Tanımlanamadı.";
-                                };
-                            };
-                            toSend.push("**Kullanıcı Bot mu?:** " + isUserABot);
-                            toSend.push("**ID:** " + usr.id);
-                            if (usr.status === "online") {
-                                var userStatus = "Çevrimiçi";
-                            } else {
-                                if (usr.status === "idle") {
-                                    var userStatus = "Uzakta";
-                                } else {
-                                    var userStatus = "Çevrimdışı";
-                                }
-                            };
-                            if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") {
-								toSend.push("**Durumu:** " + userStatus + "\n**Oynadığı oyun:** " + usr.game.name);
-							} else {
-								toSend.push("**Durumu:** " + userStatus);
-							}
-                            var detailsOf = msg.channel.server.detailsOfUser(usr);
-                            if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-                            else toSend.push("**Sunucuya katılma zamanı:** ``Katılmadı``");
-                            if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
-                                var roles = msg.channel.server.rolesOfUser(usr.id).map(role => role.name);
-                                if (roles) {
-                                    roles = roles.join(", ").replace(/@/g, '@\u200b');
-                                    if (roles && roles !== "")
-                                        if (roles.length <= 1500) {
-                                            toSend.push("**Rolleri:** `" + roles + "`");
-                                        } else {
-                                            toSend.push("**Rolleri:** `" + roles.split(", ").length + "`");
-                                        }
-                                    else
-                                        toSend.push("**Rolleri:** `yok`");
-                                } else toSend.push("**Rolleri:** Errör");
-                            } else toSend.push("**Rolleri:** Errör");
-                            if (usr.avatarURL != null) {
-                                toSend.push("**Avatar URL:** `" + usr.avatarURL + "`");
-                            }
-                            if (msg.mentions.users.length >= 1) {
-                                bot.deleteMessage(msg);
-                            }
-                            bot.sendMessage(msg, toSend);
-                        });
-                    } else {
-                        if (msg.everyoneMentioned) {
-                            bot.sendMessage(msg, "Pist, " + msg.author + ", bunu bir daha yapma tamam mı?", function(error, wMessage) {
-                                bot.deleteMessage(wMessage, {
-                                    "wait": 24000
-                                });
-                            });
-                            return;
-                        }
-                        var users = suffix.split(/, ?/);
-                        if (users.length > 4) {
-                            bot.sendMessage(msg, "Komutun kullanımı 4 kişi ile limitlidir.", function(error, wMessage) {
-                                bot.deleteMessage(wMessage, {
-                                    "wait": 24000
-                                });
-                            });
-                            return;
-                        }
-                        users.map(function(user) {
-                            var usr = findUser(msg.channel.server.members, user);
-                            if (usr) {
-                                var toSend = [],
-                                    count = 0;
-                                toSend.push(usr.username + " #" + usr.discriminator + " hakkındaki bilgiler:");
-                                if (usr.bot === true) {
-                                    var isUserABot = "Evet";
-                                } else {
-                                    if (usr.bot === false) {
-                                        var isUserABot = "Hayır";
-                                    } else {
-                                        var isUserABot = "Tanımlanamadı.";
-                                    };
-                                };
-                                toSend.push("**Kullanıcı \"Bot\" mu?:** " + isUserABot);
-                                toSend.push("**ID:** " + usr.id);
-                                if (usr.status === "online") {
-                                    var userStatus = "Çevrimiçi";
-                                } else {
-                                    if (usr.status === "idle") {
-                                        var userStatus = "Uzakta";
-                                    } else {
-                                        var userStatus = "Çevrimdışı";
-                                    }
-                                };
-                                if (usr.game && usr.game.name !== undefined && usr.game.name !== null && usr.game.name !== "null") toSend.push("**Durumu:** " + userStatus + "\n**Oynadığı oyun:** " + usr.game.name);
-                                else toSend.push("**Durumu:** " + userStatus);
-                                var detailsOf = msg.channel.server.detailsOfUser(usr);
-                                if (detailsOf) toSend.push("**Sunucuya katılma zamanı:** " + new Date(msg.channel.server.detailsOfUser(usr).joinedAt).toUTCString());
-                                else toSend.push("**Sunucuya katılma zamanı:** ``Katılmadı``");
-                                if (msg.channel.server.rolesOfUser(usr.id) != undefined) {
-                                    var roles = msg.channel.server.rolesOfUser(usr.id).map(role => role.name);
-                                    if (roles) {
-                                        roles = roles.join(", ").replace(/@/g, '@\u200b');
-                                        if (roles && roles !== "")
-                                            if (roles.length <= 1500) {
-                                                toSend.push("**Rolleri:** `" + roles + "`");
-                                            } else {
-                                                toSend.push("**Rolleri:** `" + roles.split(", ").length + "`");
-                                            }
-                                        else
-                                            toSend.push("**Rolleri:** `yok`");
-                                    } else toSend.push("**Rolleri:** Errör");
-                                } else toSend.push("**Rolleri:** Errör");
-                                if (usr.avatarURL != null) {
-                                    toSend.push("**Avatar URL:** `" + usr.avatarURL + "`");
-                                }
-                                if (msg.mentions.users.length >= 1) {
-                                    bot.deleteMessage(msg);
-                                }
-                                bot.sendMessage(msg, toSend);
-                            } else bot.sendMessage(msg, " \"" + user + "\" isimli kullanıcıyı bulamadım. Eğer birden fazla kullanıcıyı aramak istiyorsan isimlerin arasına virgül koy.", function(error, wMessage) {
-                                bot.deleteMessage(wMessage, {
-                                    "wait": 24000
-                                });
-                            });
-                        });
-                    }
-                } else {
-                    var toSend = [];
-                    if (msg.mentions.users.length > -1) {
-                        bot.deleteMessage(msg);
-                    }
-                    toSend.push(msg.channel.server.name + " isimli sunucu hakkındaki bilgiler:");
-                    toSend.push("**Server ID:** " + msg.channel.server.id);
-                    toSend.push("**Sunucu Sahibi:** " + msg.channel.server.owner.username + " (**ID:** " + msg.channel.server.owner.id + ")");
-                    toSend.push("**Sunucunun Yeri:** " + msg.channel.server.region);
-                    toSend.push("**Üye Sayısı:** " + msg.channel.server.members.length + " **Kanallar:** " + msg.channel.server.channels.length);
-                    var roles = msg.channel.server.roles.map(role => role.name);
-                    roles = roles.join(", ").replace(/@/g, '@\u200b');
-                    if (roles.length <= 1500) toSend.push("**Roller:** `" + roles + "`");
-                    else toSend.push("**Roller:** `" + roles.split(", ").length + "`");
-                    toSend.push("**Varsayılan kanal:** " + msg.channel.server.defaultChannel);
-                    toSend.push("**Bu kanalın ID'si:** " + "``" + msg.channel.id + "``");
-                    if (msg.mentions.users.length > -1) {
-                        bot.deleteMessage(msg);
-                    }
-                    bot.sendMessage(msg, toSend, function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 24000
-                        });
-                    });
-                }
+        process: function(bot, message, suffix) {
+            if (message.mentions.everyone) {
+                return;
+            };
+
+            if (message.channel.type === "dm") {
+                return;
+            };
+
+            if (message.mentions.users.size == 0) {
+                var firstment = message.author;
             } else {
-				bot.sendMessage(msg, "Bunu ÖM ile yapamazsın.", function(error, wMessage) {
-					bot.deleteMessage(wMessage, {
-						"wait": 36000
-					});
-				});
-			}
-		*/
+                var firstment = message.mentions.users.first();
+            };
+
+            if (!bot.users.get(firstment.id, "User") || !message.guild.member(firstment)) {
+                return;
+            };
+
+            const guildMemberData = message.guild.member(firstment);
+            const roleslist = guildMemberData.roles.map(Role => Role.name);
+            var roleslist2 = roleslist.join(", ").replace("@everyone, ", "");
+
+            if (!guildMemberData.voiceChannel) {
+                var vChannelName = "undefined";
+            } else {
+                var vChannelName = guildMemberData.voiceChannel.name;
+            }
+
+            if (!firstment.presence.game) {
+                var gameName = "null";
+            } else {
+                var gameName = firstment.presence.game.name;
+            }
+
+            if (!firstment.avatarURL) {
+                var avatarlink = "null";
+            } else {
+                var avatarlink = firstment.avatarURL.replace("?size=1024", "");
+            }
+
+            var toSendDataToUser = [];
+                toSendDataToUser.push(message.author);
+                toSendDataToUser.push("Listing user information for **" + firstment.username + "**:");
+                toSendDataToUser.push("");
+                toSendDataToUser.push("```javascript");
+                toSendDataToUser.push("             ID: " + firstment.id);
+                toSendDataToUser.push("       Username: " + firstment.username);
+                toSendDataToUser.push("       Nickname: " + guildMemberData.nickname);
+                toSendDataToUser.push("  Discriminator: #" + firstment.discriminator);
+                toSendDataToUser.push("         Status: " + firstment.presence.status);
+                toSendDataToUser.push("        Playing: " + gameName);
+                toSendDataToUser.push("Created Account: " + firstment.createdAt.toUTCString());
+                toSendDataToUser.push("         Joined: " + guildMemberData.joinedAt.toUTCString());
+                toSendDataToUser.push("  Voice Channel: " + vChannelName);
+                toSendDataToUser.push("         Avatar: " + avatarlink);
+                toSendDataToUser.push("            Bot: " + firstment.bot);
+                toSendDataToUser.push("          Roles: " + (guildMemberData.roles.size - 1) + " total roles");
+                if (guildMemberData.roles.size > 1 && roleslist2.length <= 1500) {
+                    toSendDataToUser.push("                 " + roleslist2);
+                }
+                toSendDataToUser.push("```");
+            message.channel.sendMessage(toSendDataToUser).catch(e => {
+                console.log("Something happened: " + e);
+            });
         }
     },
     //botun yaşayıp yaşamadığını öğren (NEED SUPPORT FROM API GUILD)
     "ping": {
         process: function(bot, msg) {
             var messages = ["**PONG**", "Pong! diyeceğimi sandın değil mi?", "Hala buradayım..", "**...**", "ping"];
-            var random = get_random(messages)
+            var random = get_random(messages);
             msg.channel.sendMessage(random).then(sentMsg => {
                 sentMsg.edit(random + "\t|\t Şu kadar sürdü: " + (sentMsg.createdTimestamp - msg.createdTimestamp) + "ms")
             });
@@ -392,36 +254,36 @@ exports.commands = {
     //bane git sayfası (API REDONE)
     "git": {
         process: function(bot, msg, suffix) {
-            msg.channel.sendMessage(msg.author + ", https://github.com/mertturunc/Bane");
+            msg.reply("https://github.com/mertturunc/Bane");
         }
     },
     /* REMOVED COMMAND
-	//github güncellemesi yapar (YAPAMADI)
+    //github güncellemesi yapar (YAPAMADI)
     "güncelle": {
-    	process: function(bot, message) {
-    		let commandWhitelist = require('./commandwhitelist.json');
-    		if (commandWhitelist.indexOf(message.sender.id) > -1) {
-    			child_process.exec("git stash && git pull && pm2 restart all", puts);
-    			console.log("Update time!");
-    		}
-    	}
+        process: function(bot, message) {
+            let commandWhitelist = require('./commandwhitelist.json');
+            if (commandWhitelist.indexOf(message.sender.id) > -1) {
+                child_process.exec("git stash && git pull && pm2 restart all", puts);
+                console.log("Update time!");
+            }
+        }
     },
     //restart (EDEMEDİ)
     "restart": {
-    	process: function(bot, message) {
-    		let commandWhitelist = require('./commandwhitelist.json');
-    		try {
-    			if (commandWhitelist.indexOf(message.sender.id) > -1) {
-    				bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
-    				console.log("  Restart time!");
-    			} else {
-    				bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
-    			}
-    		} catch (exp) {
-    		}
-    	}
+        process: function(bot, message) {
+            let commandWhitelist = require('./commandwhitelist.json');
+            try {
+                if (commandWhitelist.indexOf(message.sender.id) > -1) {
+                    bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
+                    console.log("  Restart time!");
+                } else {
+                    bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
+                }
+            } catch (exp) {
+            }
+        }
     },
-	*/
+    */
     //kanala ait twitch kanalı için abone olma linki yollar (IN DEV *atropos, API UPDATE NECESSARY *lg)
     "abone": {
         process: function(bot, message, suffix) {
@@ -473,7 +335,7 @@ exports.commands = {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             try {
                 if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    if (message.mentions.users.length > -1) {
+                    if (message.mentions.users.size > -1) {
                         message.delete(1200).catch(e => {
                             console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                         });
@@ -498,7 +360,9 @@ exports.commands = {
                 message.channel.sendMessage(" :postbox: ").then(wMessage => {
                     wMessage.delete(1200);
                 });
-                message.author.sendMessage("Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=6");
+                message.author.sendMessage("Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=8").catch(e => {
+                    console.log("Something happened: " + e);
+                });
                 var config = undefined;
             }
     },
@@ -508,7 +372,7 @@ exports.commands = {
             message.channel.sendMessage("**Helö?**").then(wMessage => {
                 wMessage.delete(600);
             });
-            if (message.mentions.users.length > -1) {
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -518,8 +382,10 @@ exports.commands = {
     //ocd mania linux (API REDONE)
     "linuxpls": {
         process: function(bot, message) {
-            message.channel.sendFile(picFolder + "linuxgemini.png", "linuxgemini.png", "linux pls");
-            if (message.mentions.users.length > -1) {
+            message.channel.sendFile(picFolder + "linuxgemini.png", "linuxgemini.png", "linux pls").catch(e => {
+                console.log("Something happened: " + e);
+            });
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -534,87 +400,51 @@ exports.commands = {
             });
         }
     },
-    //avatar filan veriyo (NEEDS MORE WORK)
+    //avatar filan veriyo (API REDONE!!11!!!!!!bir!!!)
     "avatar": {
-        process: function(bot, msg, suffix) {
-			msg.channel.sendMessage("Komut bakım nedeniyle devre dışı.");
-			/*
-            if (msg.channel.isPrivate) {
-                if (msg.author.avatarURL != null) {
-                    bot.sendMessage(msg, "PM ile sadece senin avatarını yollayabilirim. Al bakalım: " + msg.author.avatarURL);
-                    return;
-                }
-                if (msg.author.avatarURL == null) {
-                    bot.sendMessage(msg, "PM ile sadece senin avatarını yollayabilirim, ancak avatarın yok gibi gözüküyor.");
-                    return;
-                }
+        process: function(bot, message) {
+            const firstment = message.mentions.users.first();
+
+            const guildMemberData = message.guild.member(firstment);
+
+            if (firstment.id === message.author.id || suffix === guildMemberData.nickname || suffix === guildMemberData.nickname + "#" + firstment.discriminator || suffix === guildMemberData.nickname + firstment.discriminator || suffix === firstment.username || suffix === firstment.username + "#" + firstment.discriminator || suffix === firstment.username + firstment.discriminator) {
+                return message.reply("You just mentioned yourself for this command, I suggest you to go away.\n \nAnd if you want to see the info of **your account**,\nJust use this command **with no mentions**.");
             }
-            if (msg.mentions.users.length == 0 && !suffix) {
-                (msg.author.avatarURL != null) ? bot.sendMessage(msg, "**" + msg.author.username + "** isimli kullanıcının avatarı: " + msg.author.avatarURL): bot.sendMessage(msg, msg.author.username + " isimli kullanıcının avatarı yok gibi gözüküyor.", function(error, wMessage) {
-                    bot.deleteMessage(wMessage, {
-                        "wait": 8000
-                    });
-                });
-            } else if (msg.mentions.users.length > 0) {
-                if (msg.everyoneMentioned) {
-                    bot.sendMessage(msg, "Pist, " + msg.author.username.replace(/@/g, '@\u200b') + ", bunu bir daha yapma lütfen.", function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 8000
-                        });
-                    });
-                    return;
-                }
-                if (msg.mentions.users.length > 6) {
-                    bot.sendMessage(msg, "Komut 6 kişi ile limitlidir", function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 8000
-                        });
-                    });
-                    return;
-                }
-                msg.mentions.map(function(usr) {
-                    (usr.avatarURL != null) ? bot.sendMessage(msg, "**" + usr.username.replace(/@/g, '@\u200b') + "** isimli kullanıcının avatarı: " + usr.avatarURL + ""): bot.sendMessage(msg, "**" + usr.username + "**isimli kullanıcının avatarı yok gibi gözüküyor.'", function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 8000
-                        });
-                    });
-                });
-            } else {
-                if (msg.everyoneMentioned) {
-                    bot.sendMessage(msg, "Pist, " + msg.author.username.replace(/@/g, '@\u200b') + ", bunu bir daha yapma lütfen.", function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 8000
-                        });
-                    });
-                    return;
-                }
-                var users = suffix.split(/, ?/);
-                if (users.length > 6) {
-                    bot.sendMessage(msg, "Komut 6 kişi ile limitlidir", function(error, wMessage) {
-                        bot.deleteMessage(wMessage, {
-                            "wait": 8000
-                        });
-                    });
-                    return;
-                }
-                users.map(function(user) {
-                    var usr = findUser(msg.channel.server.members, user);
-                    if (usr) {
-                        (usr.avatarURL != null) ? bot.sendMessage(msg, "**" + usr.username.replace(/@/g, '@\u200b') + "** isimli kullanıcının avatarı: " + usr.avatarURL + ""): bot.sendMessage(msg, "**" + usr.username + "** has no avatar", function(error, wMessage) {
-                            bot.deleteMessage(wMessage, {
-                                "wait": 8000
-                            });
-                        });
+
+
+            if (message.channel.type === "dm") {
+                if (message.mentions.users.size == 0) {
+                    if (!message.author.avatarURL) {
+                        message.reply("Kardeş avatarın yok galiba.");
                     } else {
-                        bot.sendMessage(msg, "**" + "\"" + user + "\"  ** isimli kullanıcı bulunamadı.  Eğer birden fazla kişinin avatarını istiyorsan kullanıcıları virgül ile ayır.", function(error, wMessage) {
-                            bot.deleteMessage(wMessage, {
-                                "wait": 20000
-                            });
-                        });
+                        message.reply("Al avatarının linki: " + message.author.avatarURL);
                     }
-                });
+                } else {
+                    if (firstment.avatarURL === bot.user.avatarURL) {
+                        message.reply("Al benim avatarın linki: " + bot.user.avatarURL);
+                    } else {
+                        return;
+                    }
+                }
+            } else {
+                if (message.mentions.users.size == 0) {
+                    if (!message.author.avatarURL) {
+                        message.reply("Kardeş avatarın yok galiba.");
+                    } else {
+                        message.reply("Kendi avatarını istiyorsun ha. Al avatarının linki: " + message.author.avatarURL);
+                    }
+                } else {
+                    if (!firstment.avatarURL) {
+                        message.reply("İstediğin kişinin avatarı yok. FeelsBadMan");
+                    } else {
+                        if (firstment.avatarURL === bot.user.avatarURL) {
+                            message.reply("Al benim avatarım: " + bot.user.avatarURL);
+                        } else {
+                            message.reply("Al bakalım: " + firstment.avatarURL);
+                        }
+                    }
+                }
             }
-		*/
         }
     },
     //kullanıcıya ait ID bilgisi ve yazı kanalının ID bilgisini verir (API REDONE)
@@ -622,7 +452,7 @@ exports.commands = {
         process: function(bot, msg, suffix) {
             if (suffix && suffix.trim().replace("\"", "") === "kanal") msg.channel.sendMessage("Kanal ID'si: " + "``" + msg.channel.id + "``");
             else msg.channel.sendMessage("<@" + msg.author.id + ">" + " isimli kullanıcıya ait ID: " + "``" + msg.author.id + "``");
-            if (msg.mentions.users.length > -1) {
+            if (msg.mentions.users.size > -1) {
                 msg.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + msg.guild.name + " Guild ID: " + msg.guild.id);
                 });
@@ -668,7 +498,7 @@ exports.commands = {
     "pjsalt": {
         process: function(bot, message) {
             message.channel.sendFile(picFolder + "pjsalt.png")
-            if (message.mentions.users.length > -1) {
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -680,7 +510,7 @@ exports.commands = {
     "kappa": {
         process: function(bot, message) {
             message.channel.sendFile(picFolder + "kappa.png")
-            if (message.mentions.users.length > -1) {
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -692,7 +522,7 @@ exports.commands = {
     "yayın": {
         process: function(bot, message) {
             message.channel.sendFile(picFolder + "yayin.png");
-            if (message.mentions.users.length > -1) {
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -717,7 +547,7 @@ exports.commands = {
                 wMessage.delete(1200);
             });
             message.author.sendMessage("Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-videoyun`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-dozkan`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
-            if (message.mentions.users.length > -1) {
+            if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
@@ -800,25 +630,22 @@ exports.commands = {
     "yenioylama": {
         process: function(bot, msg, suffix) {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            if (commandWhitelist.indexOf(msg.author.id) > -1) {
-                if (!suffix) {
-                    msg.channel.sendMessage("Lütfen bir bilgi belirtiniz.");
-                    return;
-                }
-                if (votebool == true) {
-                    msg.channel.sendMessage("Hali hazırda bir oylama işlemde.");
-                    return;
-                }
-                topicstring = suffix;
-                votecreator = msg.author.username;
-                votecreatorFull = msg.author.id
-                voteserver = msg.channel.guild.name
-                votechannel = msg.channel.name
-                msg.channel.sendMessage("Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
-                votebool = true;
-            } else {
-                bot.sendMessage(msg, " ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+            if (!(commandWhitelist.indexOf(msg.author.id) > -1) && !message.guild.member(msg.author).hasPermission("KICK_MEMBERS")) {return msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");};
+            if (!suffix) {
+                msg.channel.sendMessage("Lütfen bir bilgi belirtiniz.");
+                return;
             }
+            if (votebool == true) {
+                msg.channel.sendMessage("Hali hazırda bir oylama işlemde.");
+                return;
+            }
+            topicstring = suffix;
+            votecreator = msg.author.username;
+            votecreatorFull = msg.author.id
+            voteserver = msg.channel.guild.name
+            votechannel = msg.channel.name
+            msg.channel.sendMessage("Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
+            votebool = true;
         }
     },
     "oyver": {
@@ -848,9 +675,13 @@ exports.commands = {
         process: function(bot, msg) {
             var msgArray = [];
             if (votebool == true) {
-                msg.channel.sendMessage("Şu anda aktif bir oylama var.\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`")
+                msg.channel.sendMessage("Şu anda aktif bir oylama var.\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                    console.log("Something happened: " + e);
+                });
             } else {
-                msg.channel.sendMessage("Şu anda bir oylama aktif değil.")
+                msg.channel.sendMessage("Şu anda bir oylama aktif değil.").catch(e => {
+                    console.log("Something happened: " + e);
+                });
             }
         }
     },
@@ -858,7 +689,9 @@ exports.commands = {
         process: function(bot, msg, suffix) {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             if (msg.author.id === votecreatorFull) {
-                msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`");
+                msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                    console.log("Something happened: " + e);
+                });
                 upvote = 0;
                 downvote = 0;
                 voter = [];
@@ -870,7 +703,9 @@ exports.commands = {
                 voteserver = "";
             } else {
                 if (commandWhitelist.indexOf(msg.author.id) > -1) {
-                    msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`");
+                    msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                        console.log("Something happened: " + e);
+                    });
                     upvote = 0;
                     downvote = 0;
                     voter = [];
@@ -881,7 +716,9 @@ exports.commands = {
                     votechannel = "";
                     voteserver = "";
                 } else {
-                    msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+                    msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
+                        console.log("Something happened: " + e);
+                    });
                 }
             }
         }
@@ -892,18 +729,28 @@ exports.commands = {
             var gldName = message.channel.guild.name;
             var gldOwner = message.channel.guild.owner.user.username;
             if (commandWhitelist.indexOf(message.author.id) > -1) {
-                message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**");
+                message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
+                    console.log("Something happened: " + e);
+                });
                 setTimeout(function() {
-                    message.guild.leave();
+                    message.guild.leave().catch(e => {
+                        console.log("Something happened: " + e);
+                    });
                 }, 1500);
             } else {
                 if (message.author === message.channel.guild.owner) {
-                    message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**");
+                    message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
+                        console.log("Something happened: " + e);
+                    });
                     setTimeout(function() {
-                        message.guild.leave();
+                        message.guild.leave().catch(e => {
+                            console.log("Something happened: " + e);
+                        });
                     }, 1500);
                 } else {
-                    message.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+                    message.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
+                        console.log("Something happened: " + e);
+                    });
                 }
             }
         }
@@ -911,13 +758,13 @@ exports.commands = {
     //airhorn functionality is here. ayy (API REDONE)
     "oynat": {
         process: function(bot, message, suffix) {
-        	let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             var voices = require(voiceFolder + "voices.json");
             var blacklistedVoices = require(voiceFolder + "blacklist.json");
             var vChannel = message.guild.member(message.author).voiceChannel;
             var checkConnectionOnGuild = bot.voiceConnections.get(message.guild.id, 'VoiceConnection');
             if (!checkConnectionOnGuild) {
-				var checkConnectionOnGuild = "no";
+                var checkConnectionOnGuild = "no";
             } else {
                 var checkConnectionOnGuild = "yes";
             };
@@ -935,134 +782,176 @@ exports.commands = {
                         message.channel.sendMessage(message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
                         message.author.sendMessage("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
                     } else {
-                    	if (voices[suffix].indexOf("blacklist") !== -1) {
-                    		if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    			var resulter = voices[suffix]
-                    			if (!vChannel) {
-                            		message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
-                        		} else {
-                            		if (checkConnectionOnGuild === "no") {
-                                		vChannel.join().then(connection => {
-                                    		const dispatcher = connection.playFile(voiceFolder + blacklistedVoices[resulter]);
-                                    		dispatcher.once("end", () => {
-                                        		vChannel.leave();
-                                    		});
-                                		});
-                            		} else {
-                                		return;
-                            		}
-                        		}
-                    		}
-                    	} else {
-                    		if (!vChannel) {
-                            	message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
-                        	} else {
-                            	if (checkConnectionOnGuild === "no") {
-                                	vChannel.join().then(connection => {
-                                    	const dispatcher = connection.playFile(voiceFolder + voices[suffix]);
-                                    	dispatcher.once("end", () => {
-                                        	vChannel.leave();
-                                    	});
-                                	});
-                            	} else {
-                                	return;
-                            	}
-                        	}
-                    	}
+                        if (voices[suffix].indexOf("blacklist") !== -1) {
+                            if (commandWhitelist.indexOf(message.author.id) > -1) {
+                                var resulter = voices[suffix]
+                                if (!vChannel) {
+                                    message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                                } else {
+                                    if (checkConnectionOnGuild === "no") {
+                                        vChannel.join().then(connection => {
+                                            const dispatcher = connection.playFile(voiceFolder + blacklistedVoices[resulter]);
+                                            dispatcher.once("end", () => {
+                                                vChannel.leave();
+                                            });
+                                        });
+                                    } else {
+                                        return;
+                                    }
+                                }
+                            }
+                        } else {
+                            if (!vChannel) {
+                                message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                            } else {
+                                if (checkConnectionOnGuild === "no") {
+                                    vChannel.join().then(connection => {
+                                        const dispatcher = connection.playFile(voiceFolder + voices[suffix]);
+                                        dispatcher.once("end", () => {
+                                            vChannel.leave();
+                                        });
+                                    });
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
     },
     "stealth": {
-    	process: function (bot, message, suffix) {
-    		let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-    		let cached = suffix;
-    		var localErrorCount = 0;
-    		if (!suffix) {
-    			return;
-    		} else {
-    			if (commandWhitelist.indexOf(message.author.id) > -1) {
-    				message.delete().catch(e => {
-    					localErrorCount += 1;
-    					message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-    						localErrorCount += 1;
-    						message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-    							localErrorCount += 1;
-    							console.log("I done goofed");
-    							return;
-    						});
-    						return;
-    					});
-    					return;
-    				});
-    				if (localErrorCount > 0) {
-    					return;
-    				} else {
-    					message.channel.sendMessage(cached).then(wMessage => {
-    						wMessage.delete(11);
-    					});
-    				}
-    			} else {
-    				return;
-    			}
-    		}
-    	}
+        process: function (bot, message, suffix) {
+            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+            let cached = suffix;
+            var localErrorCount = 0;
+            if (!suffix) {
+                return;
+            } else {
+                if (commandWhitelist.indexOf(message.author.id) > -1) {
+                    message.delete().catch(e => {
+                        localErrorCount += 1;
+                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
+                            localErrorCount += 1;
+                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
+                                localErrorCount += 1;
+                                console.log("I done goofed");
+                                return;
+                            });
+                            return;
+                        });
+                        return;
+                    });
+                    if (localErrorCount > 0) {
+                        return;
+                    } else {
+                        message.channel.sendMessage(cached).then(wMessage => {
+                            wMessage.delete(11);
+                        });
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
     },
     "ttstealth": {
-    	process: function (bot, message, suffix) {
-    		let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-    		let cached = suffix;
-    		var localErrorCount = 0;
-    		if (!suffix) {
-    			return;
-    		} else {
-    			if (commandWhitelist.indexOf(message.author.id) > -1) {
-    				message.delete().catch(e => {
-    					localErrorCount += 1;
-    					message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-    						localErrorCount += 1;
-    						message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-    							localErrorCount += 1;
-    							console.log("I done goofed");
-    							return;
-    						});
-    						return;
-    					});
-    					return;
-    				});
-    				if (localErrorCount > 0) {
-    					return;
-    				} else {
-    					message.channel.sendMessage(cached, {
+        process: function (bot, message, suffix) {
+            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
+            let cached = suffix;
+            var localErrorCount = 0;
+            if (!suffix) {
+                return;
+            } else {
+                if (commandWhitelist.indexOf(message.author.id) > -1) {
+                    message.delete().catch(e => {
+                        localErrorCount += 1;
+                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
+                            localErrorCount += 1;
+                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
+                                localErrorCount += 1;
+                                console.log("I done goofed");
+                                return;
+                            });
+                            return;
+                        });
+                        return;
+                    });
+                    if (localErrorCount > 0) {
+                        return;
+                    } else {
+                        message.channel.sendMessage(cached, {
                             tts: true
                         }).then(wMessage => {
-    						wMessage.delete(11);
-    					});
-    				}
-    			} else {
-    				return;
-    			}
-    		}
-    	}
+                            wMessage.delete(11);
+                        });
+                    }
+                } else {
+                    return;
+                }
+            }
+        }
     },
     "replik": {
         process: function (bot, message) {
             let replikler = require(jsonFolder + "quotes.json");
-            message.channel.sendMessage(get_random(replikler));
+            message.channel.sendMessage(get_random(replikler)).catch(e => {
+                console.log("Something happened: " + e);
+            });
         }
     },
     "serverinfo": {
         process: function (bot, message) {
-            var guilddata = message.guild;
+            if (message.channel.type === "dm") {return;};
+
+            const guilddata = message.guild;
+
+            const roleslist = guilddata.roles.map(Role => Role.name);
+            var roleslist2 = roleslist.join(", ");
+
+            const textChannelsList = message.guild.channels.filter(GuildChannel => GuildChannel.type === "text").map(GuildChannel => GuildChannel.name).join(", ");
+            const voiceChannelsList = message.guild.channels.filter(GuildChannel => GuildChannel.type === "voice").map(GuildChannel => GuildChannel.name).join(", ");
+
+            if (!guilddata.splashURL) {
+                var splashlink = "null";
+            } else {
+                var splashlink = guilddata.splashURL
+            }
+
+            if (!guilddata.iconURL) {
+                var iconlink = "null";
+            } else {
+                var iconlink = guilddata.iconURL
+            }
+
             var toFly = [];
+                toFly.push(message.author);
+                toFly.push("Listing server information for **" + guilddata.name + "**");
+                toFly.push("");
+                toFly.push("```javascript");
+                toFly.push("           ID: " + guilddata.id);
+                toFly.push("         Name: " + guilddata.name);
+                toFly.push("        Owner: @" + guilddata.owner.user.username + "#" + guilddata.owner.user.discriminator);
+                toFly.push("Creation date: " + guilddata.createdAt.toUTCString())
+                toFly.push("      Members: " + guilddata.memberCount);
+                toFly.push("     Channels: " + guilddata.channels.size);
+                toFly.push("         Text: " + textChannelsList);
+                toFly.push("        Voice: " + voiceChannelsList);
+                toFly.push("       Region: " + guilddata.region);
+                toFly.push("         Icon: " + iconlink);
+                toFly.push("       Splash: " + splashlink)
+                toFly.push("        Roles: " + guilddata.roles.size);
+                toFly.push("               " + roleslist2);
+                toFly.push("```");
+            message.channel.sendMessage(toFly).catch(e => {
+                console.log("Something happened: " + e);
+            });
         }
     },
-    "mentiontest": {
+    "channelinfo": {
         process: function (bot, message) {
-            message.channel.sendMessage(message.mentions.users.first().toString()).catch(e => {
-                message.channel.sendMessage("```" + e.stack + "```");
-            });
+
         }
     }
 };
