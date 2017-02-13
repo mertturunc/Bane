@@ -21,11 +21,16 @@
     "request": ">=2.58.0",
     "underscore": "1.8.x",
     "ytdl-core": "0.7.10",
+    "node-opus": ">=0.2.1",
+    "wav": ">=0.0.2",
+    "async": ">0.0.1",
     "opusscript": ">=0.0.1",
-    "wav": ">=0.0.2"
+    "uws": ">=0.12.0",
+    "bufferutil": ">=2.0.0",
+    "erlpack": "hammerandchisel/erlpack"
   },
   "scripts": {
-    "main": "node Bane.js",
+    "main": "node --harmony --trace-warnings Bane.js",
     "musicbot": "node ./workinprogress/BaneMusic-beta.js"
   }
 }

@@ -952,7 +952,7 @@ exports.commands = {
     },
     "channelinfo": {
         process: function (bot, message) {
-            return;
+          return;
         }
     }
 };

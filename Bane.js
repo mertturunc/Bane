@@ -47,6 +47,7 @@ bot.on("message", message => {
 
     let args = message.content.split(" ").slice(1);
 
+
     if (commands[command]) {
         commands[command].process(bot, message, suffix, args);
     } else {
@@ -60,7 +61,11 @@ bot.on("message", message => {
 });
 
 bot.on("guildCreate", guild => {
-    console.log(`Yeni bir sunucuya katıldım, adı $(guild) ve sahibi $(guild.owner.user.username)`)
+    console.log("Yeni bir sunucuya katıldım: adı " + guild.name + ", sahibi " + guild.owner.user.username + " ve ID'si " + guild.id);
+});
+
+bot.on("guildDelete", guild => {
+    console.log("Bir sunucudan ayrıldım: adı " + guild.name + ", sahibi " + guild.owner.user.username + " ve ID'si " + guild.id);
 });
 
 bot.login(config.token);
