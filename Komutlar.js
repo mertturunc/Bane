@@ -340,7 +340,8 @@ exports.commands = {
                             console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                         });
                     };
-                    bot.user.setStatus('online', suffix);
+                    bot.user.setPresence('online');
+                    bot.user.setGame(suffix);
                     message.channel.sendMessage("Tamamdır! Şu an oynanan oyun: " + suffix).then(wMessage => {
                         wMessage.delete(1200);
                     });
@@ -951,7 +952,7 @@ exports.commands = {
     },
     "channelinfo": {
         process: function (bot, message) {
-
+          return;
         }
     }
 };
