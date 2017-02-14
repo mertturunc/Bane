@@ -172,7 +172,7 @@ exports.commands = {
         }
     },
     */
-    //info kodu, kullanıcının kim olduğunu öğren. (NEEDS MORE WORK)
+    //info kodu, kullanıcının kim olduğunu öğren. (API REDONE)
     "bilgi": {
         process: function(bot, message, suffix) {
             if (message.mentions.everyone) {
