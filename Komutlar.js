@@ -172,7 +172,7 @@ exports.commands = {
         }
     },
     */
-    //info kodu, kullanıcının kim olduğunu öğren. (API REDONE)
+    //info kodu, kullanıcının kim olduğunu öğren. (NEEDS MORE WORK)
     "bilgi": {
         process: function(bot, message, suffix) {
             if (message.mentions.everyone) {
@@ -448,18 +448,6 @@ exports.commands = {
             }
         }
     },
-    //kullanıcıya ait ID bilgisi ve yazı kanalının ID bilgisini verir (API REDONE)
-    "id": {
-        process: function(bot, msg, suffix) {
-            if (suffix && suffix.trim().replace("\"", "") === "kanal") msg.channel.sendMessage("Kanal ID'si: " + "``" + msg.channel.id + "``");
-            else msg.channel.sendMessage("<@" + msg.author.id + ">" + " isimli kullanıcıya ait ID: " + "``" + msg.author.id + "``");
-            if (msg.mentions.users.size > -1) {
-                msg.delete().catch(e => {
-                    console.log("Mesaj silme yetkim yok! Guild adı: " + msg.guild.name + " Guild ID: " + msg.guild.id);
-                });
-            }
-        }
-    },
     //düzgün çalışan bir eval (API REDONE)
     "eval": {
         process: function(bot, message, suffix, args) {
@@ -528,17 +516,6 @@ exports.commands = {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
                 });
             };
-        }
-    },
-    //kanal hakkında bilgi verir (API REDONE)
-    "kanal": {
-        process: function(bot, msg) {
-            var toSend = [],
-                count = 0;
-            toSend.push("<#" + msg.channel.id + ">" + " hakkında bilgiler.")
-            toSend.push("**Topic:** " + "``" + msg.channel.topic + "``");
-            toSend.push("**ID:** " + "``" + msg.channel.id + "``");
-            msg.channel.sendMessage(toSend);
         }
     },
     //yeni komut eklendikçe burayı güncelle (API REDONE)
@@ -631,7 +608,7 @@ exports.commands = {
     "yenioylama": {
         process: function(bot, msg, suffix) {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            if (!(commandWhitelist.indexOf(msg.author.id) > -1) && !message.guild.member(msg.author).hasPermission("KICK_MEMBERS")) {return msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");};
+            if (!(commandWhitelist.indexOf(msg.author.id) > -1) && !msg.guild.member(msg.author).hasPermission("KICK_MEMBERS")) {return msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");};
             if (!suffix) {
                 msg.channel.sendMessage("Lütfen bir bilgi belirtiniz.");
                 return;
@@ -726,6 +703,7 @@ exports.commands = {
     },
     "sunucudan-ayrıl": {
         process: function(bot, message) {
+            if (message.channel.type === "dm" || message.channel.type === "group") {return;};
             let commandWhitelist = require(jsonFolder + "commandwhitelist.json");
             var gldName = message.channel.guild.name;
             var gldOwner = message.channel.guild.owner.user.username;
@@ -759,6 +737,7 @@ exports.commands = {
     //airhorn functionality is here. ayy (API REDONE)
     "oynat": {
         process: function(bot, message, suffix) {
+            if (message.channel.type === "dm" || message.channel.type === "group") {return;};
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             var voices = require(voiceFolder + "voices.json");
             var blacklistedVoices = require(voiceFolder + "blacklist.json");
@@ -822,78 +801,6 @@ exports.commands = {
             }
         }
     },
-    "stealth": {
-        process: function (bot, message, suffix) {
-            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            let cached = suffix;
-            var localErrorCount = 0;
-            if (!suffix) {
-                return;
-            } else {
-                if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    message.delete().catch(e => {
-                        localErrorCount += 1;
-                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-                            localErrorCount += 1;
-                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-                                localErrorCount += 1;
-                                console.log("I done goofed");
-                                return;
-                            });
-                            return;
-                        });
-                        return;
-                    });
-                    if (localErrorCount > 0) {
-                        return;
-                    } else {
-                        message.channel.sendMessage(cached).then(wMessage => {
-                            wMessage.delete(11);
-                        });
-                    }
-                } else {
-                    return;
-                }
-            }
-        }
-    },
-    "ttstealth": {
-        process: function (bot, message, suffix) {
-            let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            let cached = suffix;
-            var localErrorCount = 0;
-            if (!suffix) {
-                return;
-            } else {
-                if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    message.delete().catch(e => {
-                        localErrorCount += 1;
-                        message.channel.sendMessage("I can't delete your message goddamnit").catch(e => {
-                            localErrorCount += 1;
-                            message.author.sendMessage("I can't delete your message goddamnit").catch(e => {
-                                localErrorCount += 1;
-                                console.log("I done goofed");
-                                return;
-                            });
-                            return;
-                        });
-                        return;
-                    });
-                    if (localErrorCount > 0) {
-                        return;
-                    } else {
-                        message.channel.sendMessage(cached, {
-                            tts: true
-                        }).then(wMessage => {
-                            wMessage.delete(11);
-                        });
-                    }
-                } else {
-                    return;
-                }
-            }
-        }
-    },
     "replik": {
         process: function (bot, message) {
             let replikler = require(jsonFolder + "quotes.json");
@@ -904,7 +811,7 @@ exports.commands = {
     },
     "serverinfo": {
         process: function (bot, message) {
-            if (message.channel.type === "dm") {return;};
+            if (message.channel.type === "dm" || message.channel.type === "group") {return;};
 
             const guilddata = message.guild;
 
@@ -952,7 +859,65 @@ exports.commands = {
     },
     "channelinfo": {
         process: function (bot, message) {
-          return;
+            if (message.channel.type === "dm" || message.channel.type === "group") {return;};
+
+            if (message.mentions.channels.size == 0) {
+                var reqchannel = message.channel;
+                var ifcontrol = "null";
+            } else {
+                var reqchannel = message.mentions.channels.first();
+                var ifcontrol = message.mentions.channels.first();
+            }
+
+            var vchanneldata = message.guild.member(message.author).voiceChannel;
+
+            const channeldata = reqchannel;
+
+            var toRun = []
+                toRun.push(message.author);
+                toRun.push("Listing channel information for " + channeldata);
+                toRun.push("");
+                toRun.push("```javascript");
+                toRun.push("        ID: " + channeldata.id);
+                toRun.push("      Type: " + channeldata.type);
+                toRun.push("  Position: " + (channeldata.position + 1));
+
+                if (channeldata.type === "voice") {
+                    if (channeldata.userLimit == 0) {var ulimit = "unlimited";};
+
+                    var vcmemberlist = channeldata.members.map(GuildMember => GuildMember.user.username);
+
+                    toRun.push("   Bitrate: " + channeldata.bitrate);
+                    toRun.push("User Limit: " + ulimit);
+                    toRun.push("   Members: " + vcmemberlist);
+                } else {
+                    toRun.push("     Topic: " + channeldata.topic);
+                    toRun.push("Created at: " + channeldata.createdAt.toUTCString());
+                }
+
+                if (!vchanneldata || ifcontrol.type === "text" || channeldata.type === "voice") {
+                    toRun.push("```");
+                } else {
+                    if (vchanneldata.userLimit == 0) {var ulimit2 = "unlimited";};
+
+                    var vcmemberlist2 = vchanneldata.members.map(GuildMember => GuildMember.user.username).join(", ");
+                    toRun.push("```");
+                    toRun.push("");
+                    toRun.push("Listing channel information for **" + vchanneldata.name + "**");
+                    toRun.push("");
+                    toRun.push("```javascript");
+                    toRun.push("        ID: " + vchanneldata.id);
+                    toRun.push("      Type: " + vchanneldata.type);
+                    toRun.push("  Position: " + (vchanneldata.position + 1));
+                    toRun.push("   Bitrate: " + vchanneldata.bitrate);
+                    toRun.push("User Limit: " + ulimit2);
+                    toRun.push("   Members: " + vcmemberlist2);
+                    toRun.push("```");
+                }
+
+            message.channel.sendMessage(toRun).catch(e => {
+                console.log("Something happened: " + e);
+            });
         }
     }
 };
