@@ -30,12 +30,11 @@ to run the script.
 To-Do List
 -----
 
-- [ ] REVISE THE CODE FOR THE REWIRITTEN API
+- [x] REVISE THE CODE FOR THE REWIRITTEN API
 - [x] Variables for commands for example: "g","google", "search" and "lmgtfy"
 - [ ] Emote system
-- [ ] Sending image with text (the API *has* this thing, will be on bot shortly)
+- [x] Sending image with text (the API *has* this thing, will be on bot shortly)
 - [ ] One command update and run file
-- [ ] Chat logs
 - [ ] Music bot (partially done)
 - [ ] Advanced Commands (partially done)
-- [ ] Moderation
+- [x] Moderation
