@@ -427,11 +427,6 @@ exports.commands = {
 
             const guildMemberData = message.guild.member(firstment);
 
-            if (firstment.id === message.author.id || suffix === guildMemberData.nickname || suffix === guildMemberData.nickname + "#" + firstment.discriminator || suffix === guildMemberData.nickname + firstment.discriminator || suffix === firstment.username || suffix === firstment.username + "#" + firstment.discriminator || suffix === firstment.username + firstment.discriminator) {
-                return message.reply("You just mentioned yourself for this command, I suggest you to go away.\n \nAnd if you want to see the info of **your account**,\nJust use this command **with no mentions**.");
-            }
-
-
             if (message.channel.type === "dm") {
                 if (message.mentions.users.size == 0) {
                     if (!message.author.avatarURL) {
