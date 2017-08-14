@@ -31,7 +31,7 @@ To-Do List
 -----
 
 - [x] REVISE THE CODE FOR THE REWIRITTEN API
-- [ ] RE-REVISE THE CODE FOR DISCORD.JS 11.1.0
+- [x] RE-REVISE THE CODE FOR DISCORD.JS 11.1.0
 - [x] Variables for commands for example: "g","google", "search" and "lmgtfy"
 - [ ] Emote system
 - [x] Sending image with text (the API *has* this thing, will be on bot shortly)
