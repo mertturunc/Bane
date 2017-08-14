@@ -14,10 +14,10 @@
 			let commandWhiteList = require('./commandwhitelist.json');
 			try {
 				if (commandWhiteList.indexOf(message.sender.id) > -1) {
-					bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
+					bot.send(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
 					console.log("  Restart time!");
 				} else {
-					bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
+					bot.send(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
 				}
 			} catch (exp) {
 			}
@@ -26,6 +26,6 @@
 // oylama info
 "oylama": {
 	process: function(bot,msg) {
-			bot.sendMessage(msg, "buraya kullanım şeysi gelecek ayrıca mesaj olarak atsın bence xd");
+			bot.send(msg, "buraya kullanım şeysi gelecek ayrıca mesaj olarak atsın bence xd");
 	}
 }
