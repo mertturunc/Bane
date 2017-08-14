@@ -19,7 +19,7 @@ Usage
 
 Then, make your config.json based off from config-base.json. *(We won't provide any API support.)* After done all that,
 
-        npm run-script main
+        node Bane.js
 
 to run the script.
 
@@ -31,12 +31,11 @@ To-Do List
 -----
 
 - [x] REVISE THE CODE FOR THE REWIRITTEN API
-- [ ] RE-REVISE THE CODE FOR DISCORD.JS 11.1.0
+- [x] RE-REVISE THE CODE FOR DISCORD.JS 11.1.0
 - [x] Variables for commands for example: "g","google", "search" and "lmgtfy"
 - [ ] Emote system
-- [ ] Sending image with text (the API *has* this thing, will be on bot shortly)
+- [x] Sending image with text (the API *has* this thing, will be on bot shortly)
 - [ ] One command update and run file
-- [ ] Chat logs
 - [ ] Music bot (partially done)
 - [ ] Advanced Commands (partially done)
-- [ ] Moderation
+- [x] Moderation
