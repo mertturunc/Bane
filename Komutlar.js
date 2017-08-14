@@ -57,14 +57,14 @@ exports.commands = {
                 }, function(err, response) {
                     if (err) throw new Error(err);
                     if (response.stream == null) {
-                        msg.channel.sendMessage("**Yayın durumu:**" + " Kapalı");
+                        msg.channel.send("**Yayın durumu:**" + " Kapalı");
                     } else {
                         var rt = "**Yayın durumu:** " + "Açık" + "\n";
                         rt += "**Başlık:** " + response.stream.channel.status + "\n";
                         rt += "**Oyun:** " + response.stream.game + "\n";
                         rt += "**İzleyici:** " + response.stream.viewers + "\n";
                         rt += "**Link:**" + "`` " + response.stream.channel.url + " ``\n";
-                        msg.channel.sendMessage(rt);
+                        msg.channel.send(rt);
                     }
                 });
             } catch (e) {
@@ -76,14 +76,14 @@ exports.commands = {
     "g": {
         process: function(bot, msg, suffix) {
             if (!suffix) {
-                msg.channel.sendMessage(" ``*google`` dedikten sonra arayacağın şeyi yaz. ");
+                msg.channel.send(" ``*google`` dedikten sonra arayacağın şeyi yaz. ");
                 return;
             }
             suffix = suffix.split(" ");
             for (var i = 0; i < suffix.length; i++) {
                 suffix[i] = encodeURIComponent(suffix[i]);
             }
-            msg.channel.sendMessage("Your search result: http://www.google.com/search?q=" + suffix.join("+") + "&btnI=");
+            msg.channel.send("Your search result: http://www.google.com/search?q=" + suffix.join("+") + "&btnI=");
         }
     },
     /* REMOVED COMMAND
@@ -95,7 +95,7 @@ exports.commands = {
                 if(suffix) {
                     console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
                     bot.setUsername(suffix, function(error) {
-                        bot.sendMessage(msg.channel, error);
+                        bot.send(msg.channel, error);
                     });
                         bot.deleteMessage(msg);
                 }
@@ -110,11 +110,11 @@ exports.commands = {
             let amount = parseInt(message.content.split(' ').pop());
 
             if (!message.guild.member(message.author).hasPermission("MANAGE_MESSAGES")) {
-                return message.channel.sendMessage("You don't have the permission (MANAGE_MESSAGES) to do this operation.");
+                return message.channel.send("You don't have the permission (MANAGE_MESSAGES) to do this operation.");
             };
 
             if (!message.guild.member(bot.user).hasPermission("MANAGE_MESSAGES")) {
-                return message.channel.sendMessage("I don't have the permission (MANAGE_MESSAGES) to do this operation.");
+                return message.channel.send("I don't have the permission (MANAGE_MESSAGES) to do this operation.");
             };
 
             if (message.mentions.everyone) {return;};
@@ -159,7 +159,7 @@ exports.commands = {
                 toSend.push("**GitHub:** " + gitlinkB);
                 toSend.push("**Yapımcılar:** " + "<@107111069952012288> ve <@120267401672523776> 'dir.");
                 toSend.push("**Komutlar:**" + " ``*yardım`` yazarak komutları öğrenebilirsin.");
-                msg.channel.sendMessage(toSend);
+                msg.channel.send(toSend);
             } else {
                 var toSend2 = [],
                     count = 0;
@@ -167,7 +167,7 @@ exports.commands = {
                 toSend2.push("**Versiyon:** " + getinfo.version);
                 toSend2.push("**GitHub:** " + gitlinkB);
                 toSend2.push("**Komutlar:**" + " ``*yardım`` yazarak komutları öğrenebilirsin.");
-                msg.channel.sendMessage(toSend2);
+                msg.channel.send(toSend2);
             }
         }
     },
@@ -236,7 +236,7 @@ exports.commands = {
                     toSendDataToUser.push("                 " + roleslist2);
                 }
                 toSendDataToUser.push("```");
-            message.channel.sendMessage(toSendDataToUser).catch(e => {
+            message.channel.send(toSendDataToUser).catch(e => {
                 console.log("Something happened: " + e);
             });
         }
@@ -246,7 +246,7 @@ exports.commands = {
         process: function(bot, msg) {
             var messages = ["**PONG**", "Pong! diyeceğimi sandın değil mi?", "Hala buradayım..", "**...**", "ping"];
             var random = get_random(messages);
-            msg.channel.sendMessage(random).then(sentMsg => {
+            msg.channel.send(random).then(sentMsg => {
                 sentMsg.edit(random + "\t|\t Şu kadar sürdü: " + (sentMsg.createdTimestamp - msg.createdTimestamp) + "ms")
             });
         }
@@ -274,10 +274,10 @@ exports.commands = {
             let commandWhitelist = require('./commandwhitelist.json');
             try {
                 if (commandWhitelist.indexOf(message.sender.id) > -1) {
-                    bot.sendMessage(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
+                    bot.send(message.channel, "**Kahve molası **", false, function() {  child_process.exec("pm2 restart all", puts); process.exit(0); });
                     console.log("  Restart time!");
                 } else {
-                    bot.sendMessage(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
+                    bot.send(message, " ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
                 }
             } catch (exp) {
             }
@@ -288,22 +288,22 @@ exports.commands = {
     "abone": {
         process: function(bot, message, suffix) {
             var redoneSuff = suffix && suffix.trim().replace("\"", "");
-            message.channel.sendMessage(" :postbox: ").then(wMessage => {
+            message.channel.send(" :postbox: ").then(wMessage => {
                 wMessage.delete(1200);
             });
             if (redoneSuff === "dozkan") {
-                message.author.sendMessage("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button");
+                message.author.send("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/dozkan/ticket?ref=below_video_subscribe_button");
             } else {
                 if (redoneSuff === "videoyun") {
-                    message.author.sendMessage("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button");
+                    message.author.send("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/videoyun/ticket?ref=below_video_subscribe_button");
                 } else {
                     if (redoneSuff === "grimnax") {
-                        message.author.sendMessage("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/grimnax/ticket?ref=below_video_subscribe_button");
+                        message.author.send("Vermiş olduğum linkten abone olabilirsiniz: " + "\nhttps://www.twitch.tv/products/grimnax/ticket?ref=below_video_subscribe_button");
                     } else {
                         if (redoneSuff === "liste") {
-                            message.author.sendMessage("Şu anlık verebildiğim adresler: ``dozkan``,``videoyun`` ve ``grimnax``. Eğer Twitch partneri iseniz bot geliştiricilerine başvurup komuta ekletebilirsiniz.");
+                            message.author.send("Şu anlık verebildiğim adresler: ``dozkan``,``videoyun`` ve ``grimnax``. Eğer Twitch partneri iseniz bot geliştiricilerine başvurup komuta ekletebilirsiniz.");
                         } else {
-                            message.channel.sendMessage("Lütfen listede bulunan kanallardan birini '*abone' yazdıktan sonra boşluk bırakıp belirt. \n Eğer listeyi görmek istersen ``*abone liste`` yazabilirsin.");
+                            message.channel.send("Lütfen listede bulunan kanallardan birini '*abone' yazdıktan sonra boşluk bırakıp belirt. \n Eğer listeyi görmek istersen ``*abone liste`` yazabilirsin.");
                         }
                     }
                 }
@@ -316,13 +316,13 @@ exports.commands = {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             try {
                 if (commandWhitelist.indexOf(message.author.id) > -1) {
-                    message.channel.sendMessage("**Biraz dinlenmem gerek.**")
+                    message.channel.send("**Biraz dinlenmem gerek.**")
                     setTimeout(function() {
                         process.exit(0);
                     }, 1500);
                     console.log("\nByeBye!");
                 } else {
-                    message.channel.sendMessage(" ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
+                    message.channel.send(" ``Yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮`` ");
                 }
             } catch (exp) {
 
@@ -342,12 +342,12 @@ exports.commands = {
                     };
                     bot.user.setPresence('online');
                     bot.user.setGame(suffix);
-                    message.channel.sendMessage("Tamamdır! Şu an oynanan oyun: " + suffix).then(wMessage => {
+                    message.channel.send("Tamamdır! Şu an oynanan oyun: " + suffix).then(wMessage => {
                         wMessage.delete(1200);
                     });
                     console.log(message.author.username + " varsayılan oyunu " + suffix + " olarak değiştirdi.");
                 } else {
-                    message.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
+                    message.channel.send(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");
                 }
             } catch (exp) {
                 console.log("you dun goofed: ", exp);
@@ -358,10 +358,10 @@ exports.commands = {
     "katıl": {
         process: function(bot, message) {
                 var config = require(jsonFolder + "config.json");
-                message.channel.sendMessage(" :postbox: ").then(wMessage => {
+                message.channel.send(" :postbox: ").then(wMessage => {
                     wMessage.delete(1200);
                 });
-                message.author.sendMessage("Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=8").catch(e => {
+                message.author.send("Since we changed to the Official API, We have to sacrifice the \"Join by Invite\" method. \nBut, you can use the link below to add me on any server. (You have to have \"Manage Server\" role on the Server where you want to add me.)\nhttps://discordapp.com/oauth2/authorize?&client_id=" + config.api_client_id + "&scope=bot&permissions=8").catch(e => {
                     console.log("Something happened: " + e);
                 });
                 var config = undefined;
@@ -370,7 +370,7 @@ exports.commands = {
     //en gereksiz kod (API REDONE)
     "helö": {
         process: function(bot, message) {
-            message.channel.sendMessage("**Helö?**").then(wMessage => {
+            message.channel.send("**Helö?**").then(wMessage => {
                 wMessage.delete(600);
             });
             if (message.mentions.users.size > -1) {
@@ -396,7 +396,7 @@ exports.commands = {
     //message delete için oluşturduğum test komutu (API REDONE)
     "explode": {
         process: function(bot, message) {
-            message.channel.sendMessage("BOOM!").then(wMessage => {
+            message.channel.send("BOOM!").then(wMessage => {
                 wMessage.delete(100);
             });
         }
@@ -456,7 +456,7 @@ exports.commands = {
             if (evalWhitelist.indexOf(message.author.id) > -1) {
                 if (blockedEval.indexOf(suffix) > -1) {
                     var bricxs = ["what are you doing", "staph", "don't kill me pls", "**...**"];
-                    message.channel.sendMessage(message.author + " " + get_random(bricxs));
+                    message.channel.send(message.author + " " + get_random(bricxs));
                 } else {
                     try {
                         console.log(message.author.username + " \"eval " + suffix + "\" komutunu kullandı.");
@@ -466,7 +466,7 @@ exports.commands = {
                         toSend.push("```javascript");
                         toSend.push(eval(suffix));
                         toSend.push("```");
-                        message.channel.sendMessage(toSend);
+                        message.channel.send(toSend);
                     } catch (err) {
                         console.log(message.author.username + " eval komutunu hatalı kullandı."); // COMPLETELY REMOVED THE ERROR STACK
                         let array = [];
@@ -474,11 +474,11 @@ exports.commands = {
                         array.push('```javascript');
                         array.push(err);
                         array.push('```');
-                        message.channel.sendMessage(array);
+                        message.channel.send(array);
                     }
                 }
             } else {
-                message.channel.sendMessage("``Eval yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮``");
+                message.channel.send("``Eval yetkiniz bulunmamakta.( ° ͜ʖ͡°)╭∩╮``");
                 console.log(message.author.username + " eval komutunu kullanmayı denedi, en azından denedi yani.")
             }
         }
@@ -521,10 +521,10 @@ exports.commands = {
     //yeni komut eklendikçe burayı güncelle (API REDONE)
     "yardım": {
         process: function(bot, message) {
-            message.channel.sendMessage(":postbox:").then(wMessage => {
+            message.channel.send(":postbox:").then(wMessage => {
                 wMessage.delete(1200);
             });
-            message.author.sendMessage("Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-videoyun`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-dozkan`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
+            message.author.send("Şu anlık yapım aşamasındayım. Kullanabileceğin komutlar: ``g`` , ``bilgi`` , ``ping`` , ``abone-videoyun`` , ``ayarla`` , ``katıl`` , ``linuxpls`` , ``abone-dozkan`` , ``avatar`` , ``id`` , ``eval`` , ``kappa`` , ``hakkında`` , ``git`` , ``kanal`` .")
             if (message.mentions.users.size > -1) {
                 message.delete().catch(e => {
                     console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);
@@ -537,7 +537,7 @@ exports.commands = {
         process: function(bot, message, suffix) {
             var cachedUnshort = suffix;
             message.delete(100).catch(error => {
-                message.author.sendMessage("I wasn't able to delete the link you sent to me. Can you delete it for me please?");
+                message.author.send("I wasn't able to delete the link you sent to me. Can you delete it for me please?");
             });
             var config = require(jsonFolder + "config.json");
             var params = {
@@ -547,7 +547,7 @@ exports.commands = {
             var suffix1 = cachedUnshort.replace("http://" + "https://", "");
             var suffix2 = suffix1.split("/");
             if (!cachedUnshort) {
-                message.channel.sendMessage("Lütfen 'goo.gl' ile kısaltılmış adresi belirtiniz.");
+                message.channel.send("Lütfen 'goo.gl' ile kısaltılmış adresi belirtiniz.");
                 return;
             } else {
                 if (suffix2.indexOf("goo.gl") > -1) {
@@ -558,13 +558,13 @@ exports.commands = {
                             toSend.push("```");
                             toSend.push(err);
                             toSend.push("```");
-                            message.channel.sendMessage(toSend);
+                            message.channel.send(toSend);
                         } else {
-                            message.author.sendMessage(message.author + ": " + response.longUrl);
+                            message.author.send(message.author + ": " + response.longUrl);
                         }
                     });
                 } else {
-                    message.channel.sendMessage(message.author + ", bu komut sadece 'goo.gl' ile kısaltılmış adresler için geçerlidir.");
+                    message.channel.send(message.author + ", bu komut sadece 'goo.gl' ile kısaltılmış adresler için geçerlidir.");
                 }
             }
             var config = undefined;
@@ -575,7 +575,7 @@ exports.commands = {
         process: function(bot, message, suffix) {
             var cachedShort = suffix;
             message.delete(100).catch(error => {
-                message.author.sendMessage("I wasn't able to delete the link you sent to me. Can you delete it for me please?");
+                message.author.send("I wasn't able to delete the link you sent to me. Can you delete it for me please?");
             });
             var config = require(jsonFolder + "config.json");
             var params = {
@@ -585,7 +585,7 @@ exports.commands = {
                 }
             };
             if (!cachedShort) {
-                message.channel.sendMessage("Lütfen kısaltmak istediğin adresi belirt :(");
+                message.channel.send("Lütfen kısaltmak istediğin adresi belirt :(");
                 return;
             } else {
                 urlshortener.url.insert(params, function(err, response) {
@@ -595,9 +595,9 @@ exports.commands = {
                         toSend.push("```");
                         toSend.push(err);
                         toSend.push("```");
-                        message.channel.sendMessage(toSend);
+                        message.channel.send(toSend);
                     } else {
-                        message.channel.sendMessage(message.author + ", " + response.id);
+                        message.channel.send(message.author + ", " + response.id);
                     }
                 });
             }
@@ -608,13 +608,13 @@ exports.commands = {
     "yenioylama": {
         process: function(bot, msg, suffix) {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
-            if (!(commandWhitelist.indexOf(msg.author.id) > -1) && !msg.guild.member(msg.author).hasPermission("KICK_MEMBERS")) {return msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");};
+            if (!(commandWhitelist.indexOf(msg.author.id) > -1) && !msg.guild.member(msg.author).hasPermission("KICK_MEMBERS")) {return msg.channel.send(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ");};
             if (!suffix) {
-                msg.channel.sendMessage("Lütfen bir bilgi belirtiniz.");
+                msg.channel.send("Lütfen bir bilgi belirtiniz.");
                 return;
             }
             if (votebool == true) {
-                msg.channel.sendMessage("Hali hazırda bir oylama işlemde.");
+                msg.channel.send("Hali hazırda bir oylama işlemde.");
                 return;
             }
             topicstring = suffix;
@@ -622,18 +622,18 @@ exports.commands = {
             votecreatorFull = msg.author.id
             voteserver = msg.channel.guild.name
             votechannel = msg.channel.name
-            msg.channel.sendMessage("Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
+            msg.channel.send("Yeni oylama başlatıldı: `" + suffix + "`\nOy vermek için `*oyver +/-` komutunu kullanınız.");
             votebool = true;
         }
     },
     "oyver": {
         process: function(bot, msg, suffix) {
             if (!suffix) {
-                msg.channel.sendMessage("Bir şeye oy vermen lazım!");
+                msg.channel.send("Bir şeye oy vermen lazım!");
                 return;
             }
             if (votebool == false) {
-                msg.channel.sendMessage("Şu anda aktif bir oylama yok. `*yenioylama` komutu ile yeni bir oylama başlatabilirsin.");
+                msg.channel.send("Şu anda aktif bir oylama yok. `*yenioylama` komutu ile yeni bir oylama başlatabilirsin.");
                 return;
             }
             if (voter.indexOf(msg.author) != -1) {
@@ -653,11 +653,11 @@ exports.commands = {
         process: function(bot, msg) {
             var msgArray = [];
             if (votebool == true) {
-                msg.channel.sendMessage("Şu anda aktif bir oylama var.\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                msg.channel.send("Şu anda aktif bir oylama var.\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
                     console.log("Something happened: " + e);
                 });
             } else {
-                msg.channel.sendMessage("Şu anda bir oylama aktif değil.").catch(e => {
+                msg.channel.send("Şu anda bir oylama aktif değil.").catch(e => {
                     console.log("Something happened: " + e);
                 });
             }
@@ -667,7 +667,7 @@ exports.commands = {
         process: function(bot, msg, suffix) {
             let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
             if (msg.author.id === votecreatorFull) {
-                msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                msg.channel.send("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
                     console.log("Something happened: " + e);
                 });
                 upvote = 0;
@@ -681,7 +681,7 @@ exports.commands = {
                 voteserver = "";
             } else {
                 if (commandWhitelist.indexOf(msg.author.id) > -1) {
-                    msg.channel.sendMessage("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
+                    msg.channel.send("`Oylama sonlandırıldı.`\n**Oylamanın sonuçları:**\nKonu: `" + topicstring + "`\nOylama hakkında bilgiler: ```Oluşturan: " + votecreator + "\nSunucu: " + voteserver + "\nKanal: " + votechannel + "```\nEvet oylayan: `" + upvote + "`\nHayır oylayan: `" + downvote + "`").catch(e => {
                         console.log("Something happened: " + e);
                     });
                     upvote = 0;
@@ -694,7 +694,7 @@ exports.commands = {
                     votechannel = "";
                     voteserver = "";
                 } else {
-                    msg.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
+                    msg.channel.send(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
                         console.log("Something happened: " + e);
                     });
                 }
@@ -708,7 +708,7 @@ exports.commands = {
             var gldName = message.channel.guild.name;
             var gldOwner = message.channel.guild.owner.user.username;
             if (commandWhitelist.indexOf(message.author.id) > -1) {
-                message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
+                message.channel.send("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
                     console.log("Something happened: " + e);
                 });
                 setTimeout(function() {
@@ -718,7 +718,7 @@ exports.commands = {
                 }, 1500);
             } else {
                 if (message.author === message.channel.guild.owner) {
-                    message.channel.sendMessage("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
+                    message.channel.send("**Burada dükkanı kapatıyoruz, peki.**").catch(e => {
                         console.log("Something happened: " + e);
                     });
                     setTimeout(function() {
@@ -727,7 +727,7 @@ exports.commands = {
                         });
                     }, 1500);
                 } else {
-                    message.channel.sendMessage(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
+                    message.channel.send(" ``Yetkin yok. ( ° ͜ʖ͡°)╭∩╮`` ").catch(e => {
                         console.log("Something happened: " + e);
                     });
                 }
@@ -749,24 +749,24 @@ exports.commands = {
                 var checkConnectionOnGuild = "yes";
             };
             if (!suffix) {
-                message.channel.sendMessage(message.author + ", herhangi bir şey belirtmedin. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
-                message.author.sendMessage("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
+                message.channel.send(message.author + ", herhangi bir şey belirtmedin. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+                message.author.send("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
             } else {
                 if (suffix === "liste") {
-                    message.channel.sendMessage(":postbox:").then(wMessage => {
+                    message.channel.send(":postbox:").then(wMessage => {
                         wMessage.delete(1453);
                     });
-                    message.author.sendMessage("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+                    message.author.send("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
                 } else {
                     if (voices[suffix] === undefined) {
-                        message.channel.sendMessage(message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
-                        message.author.sendMessage("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
+                        message.channel.send(message.author + ", belirttiğin klip adı geçerli değil. ÖM olarak sana neler olduğunu gönderdim. \nKomut kullanımı (herhangi bir ses kanalında iken): `*oynat <klip adı>`");
+                        message.author.send("Tamam, işte kullanabileceğin klipler: \n```" + voices.liste + "```\nKomut kullanımı: `*oynat <klip adı>`");
                     } else {
                         if (voices[suffix].indexOf("blacklist") !== -1) {
                             if (commandWhitelist.indexOf(message.author.id) > -1) {
                                 var resulter = voices[suffix]
                                 if (!vChannel) {
-                                    message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                                    message.channel.send(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
                                 } else {
                                     if (checkConnectionOnGuild === "no") {
                                         vChannel.join().then(connection => {
@@ -782,7 +782,7 @@ exports.commands = {
                             }
                         } else {
                             if (!vChannel) {
-                                message.channel.sendMessage(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
+                                message.channel.send(message.author + ", herhangi bir ses kanalına bağlı değilsin.");
                             } else {
                                 if (checkConnectionOnGuild === "no") {
                                     vChannel.join().then(connection => {
@@ -804,7 +804,7 @@ exports.commands = {
     "replik": {
         process: function (bot, message) {
             let replikler = require(jsonFolder + "quotes.json");
-            message.channel.sendMessage(get_random(replikler)).catch(e => {
+            message.channel.send(get_random(replikler)).catch(e => {
                 console.log("Something happened: " + e);
             });
         }
@@ -852,7 +852,7 @@ exports.commands = {
                 toFly.push("        Roles: " + guilddata.roles.size);
                 toFly.push("               " + roleslist2);
                 toFly.push("```");
-            message.channel.sendMessage(toFly).catch(e => {
+            message.channel.send(toFly).catch(e => {
                 console.log("Something happened: " + e);
             });
         }
@@ -915,7 +915,7 @@ exports.commands = {
                     toRun.push("```");
                 }
 
-            message.channel.sendMessage(toRun).catch(e => {
+            message.channel.send(toRun).catch(e => {
                 console.log("Something happened: " + e);
             });
         }
