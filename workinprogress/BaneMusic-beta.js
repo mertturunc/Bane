@@ -200,13 +200,13 @@ function playFromList(msg) {
     }
     if(playList) {
         if(playList.length > 0) {
-            bot.sendMessage(msg.channel, "**\"" + playListName + "\" çalma listesinden çalınıyor. (" + playListIndex++ + "/" + playListLength + ")\nHerhangi bir şarkı eklendiğinde \"" + playListName + "\" çalma listesinden çalma durdurulacaktır.**");
+            bot.send(msg.channel, "**\"" + playListName + "\" çalma listesinden çalınıyor. (" + playListIndex++ + "/" + playListLength + ")\nHerhangi bir şarkı eklendiğinde \"" + playListName + "\" çalma listesinden çalma durdurulacaktır.**");
             var index = Math.floor(Math.random() * playList.length);
             var sid = playList[index];
             playList.splice(index, 1);
             playFromID(msg, sid);
         } else {
-            bot.sendMessage(msg.channel, "**\"" + playListName + "\" çalma listesinde çalacak şarkı kalmadı.**");
+            bot.send(msg.channel, "**\"" + playListName + "\" çalma listesinde çalacak şarkı kalmadı.**");
             playList = null;
             playListIndex = null;
             playListLength = null;
@@ -223,10 +223,10 @@ function playFromList(msg) {
             updateSongList();
             playFromID(msg, next.songID, next);
         } else {
-            bot.sendMessage(msg.channel, "**Listede çalınacak şarkı yok.**");
+            bot.send(msg.channel, "**Listede çalınacak şarkı yok.**");
         }
     } else {
-        bot.sendMessage(msg.channel, "**Hata: Çalma listesi bulunamadı, lütfen bir admin ile iletişime geçin.**");
+        bot.send(msg.channel, "**Hata: Çalma listesi bulunamadı, lütfen bir admin ile iletişime geçin.**");
     }
 }
 function isNumeric(n) {
@@ -237,7 +237,7 @@ function playFromID(msg, suffix, pInfo) {
     try {
         if(bot.voiceConnection) {
             if(pTimeout) { // eğer şarkının bitişi için bir timeout atanmışsa
-                bot.sendMessage(msg.channel, "**\"" + playListName + "\" çalma listesinden çalma durduruldu.**");
+                bot.send(msg.channel, "**\"" + playListName + "\" çalma listesinden çalma durduruldu.**");
                 stopPlaying();
             }
             if(!isset(pInfo))
@@ -248,9 +248,9 @@ function playFromID(msg, suffix, pInfo) {
                 }
                 if(isset(videoInfo)) {
                     if(pInfo) {
-                        bot.sendMessage(msg.channel, "**Çalıyor:** " + videoInfo.title + " **["+ secondsToHms(videoInfo.length_seconds) + "]" + " / Ekleyen : " + pInfo.submitterName + "**");
+                        bot.send(msg.channel, "**Çalıyor:** " + videoInfo.title + " **["+ secondsToHms(videoInfo.length_seconds) + "]" + " / Ekleyen : " + pInfo.submitterName + "**");
                     } else {
-                        bot.sendMessage(msg.channel, "**Çalıyor:** " + videoInfo.title + " **["+ secondsToHms(videoInfo.length_seconds) + "]" + " / Ekleyen : " + msg.sender.name + "**");
+                        bot.send(msg.channel, "**Çalıyor:** " + videoInfo.title + " **["+ secondsToHms(videoInfo.length_seconds) + "]" + " / Ekleyen : " + msg.sender.name + "**");
                     }
                     //var yturl = "https://request-kapkeyk.c9users.io:8081/?data=" + suffix;
                     //var stream = request(yturl);
@@ -259,7 +259,7 @@ function playFromID(msg, suffix, pInfo) {
                     bot.voiceConnection.playRawStream(ytdl(video, {filter: 'audioonly'}), {Volume: 0.1});
                     pTimeout = setTimeout(
                         function() {
-                            bot.sendMessage(msg.channel, "**Şarkı bitti.\n\n**");
+                            bot.send(msg.channel, "**Şarkı bitti.\n\n**");
                             stopPlaying();
                             playFromList(msg);
                         },
@@ -286,7 +286,7 @@ function playFromID(msg, suffix, pInfo) {
                     }
                     updateNowPlaying();
                 } else {
-                    bot.sendMessage(msg.channel, msg.sender + "**, şarkı eklenemedi!**");
+                    bot.send(msg.channel, msg.sender + "**, şarkı eklenemedi!**");
                 }
             });
         } else {
@@ -329,7 +329,7 @@ function checkRole(id, user, role) {
         description: "Bot açık ise \"pong!\" cevabını gönderir.",
         process: function(bot, msg, suffix) {
             try {
-                bot.sendMessage(msg.channel, msg.sender+" pong!");
+                bot.send(msg.channel, msg.sender+" pong!");
             } catch(e) {
                 console.log("Error ping at " + msg.channel.name + " : " + e);
             }
@@ -343,10 +343,10 @@ function checkRole(id, user, role) {
                 if(checkPermission(msg.sender.id, "admin")) {
                     if(Config.freeMusic) {
                         Config.freeMusic = false;
-                        bot.sendMessage(msg.channel, "Şarkı geçmek artık **kısıtlı**.");
+                        bot.send(msg.channel, "Şarkı geçmek artık **kısıtlı**.");
                     } else {
                         Config.freeMusic = true;
-                        bot.sendMessage(msg.channel, "Şarkı geçmek artık **serbest**.");
+                        bot.send(msg.channel, "Şarkı geçmek artık **serbest**.");
                     }
                     updateConfig();
                 }
@@ -361,12 +361,12 @@ function checkRole(id, user, role) {
         process: function(bot,msg,suffix) {
             try {
                     if(msg.channel.isPrivate) {
-                        bot.sendMessage(msg.sender, "**PM'den şarkı ekleyemezsiniz.**");
+                        bot.send(msg.sender, "**PM'den şarkı ekleyemezsiniz.**");
                         return;
                     }
                     if (songBanned.hasOwnProperty(msg.sender.id)) {
                         if(songBanned[msg.sender.id].permanent) {
-                            bot.sendMessage(msg.channel, "**" + msg.sender + ", çalma listesine şarkı eklemeniz engellenmiştir.**");
+                            bot.send(msg.channel, "**" + msg.sender + ", çalma listesine şarkı eklemeniz engellenmiştir.**");
                             return;
                         } else {
                             var date1 = new Date(songBanned[msg.sender.id].time);
@@ -376,7 +376,7 @@ function checkRole(id, user, role) {
                                 delete songBanned[msg.sender.id];
                                 updateSongBanned();
                             } else {
-                                bot.sendMessage(msg.channel, "**" + msg.sender + ", çalma listesine şarkı eklemeniz " + timeFormatString(banTime.hours, banTime.minutes, banTime.seconds) + " engellenmiştir.**");
+                                bot.send(msg.channel, "**" + msg.sender + ", çalma listesine şarkı eklemeniz " + timeFormatString(banTime.hours, banTime.minutes, banTime.seconds) + " engellenmiştir.**");
                                 return;
                             }
                         }z
@@ -407,7 +407,7 @@ function checkRole(id, user, role) {
                             playFromList(msg);
                         } else if(suffix) {
                             if(playListName && playList || playListIndex || playListLength) {
-                                bot.sendMessage(msg.channel, "**\"" + playListName + "\" çalma listesinden çalma durduruldu, çalan şarkı bittikten sonra normal çalma listesine geçilecek.**");
+                                bot.send(msg.channel, "**\"" + playListName + "\" çalma listesinden çalma durduruldu, çalan şarkı bittikten sonra normal çalma listesine geçilecek.**");
                                 playListName = null;
                                 playList = null;
                                 playListIndex = null;
@@ -447,27 +447,27 @@ function checkRole(id, user, role) {
                                                 if(Object.keys(songList).length == 1 && pTimeout == null) {
                                                     playFromList(msg);
                                                 } else {
-                                                    bot.sendMessage(msg.channel, "**" + msg.sender.name + " şarkı listesine** \"" + title + "\" ** şarkısını ekledi.**");
+                                                    bot.send(msg.channel, "**" + msg.sender.name + " şarkı listesine** \"" + title + "\" ** şarkısını ekledi.**");
                                                 }
                                             } else {
-                                                bot.sendMessage(msg.channel, "**" + msg.sender + ", eklemeye çalıştığınız şarkı zaten çalma listesinde var.**");
+                                                bot.send(msg.channel, "**" + msg.sender + ", eklemeye çalıştığınız şarkı zaten çalma listesinde var.**");
                                             }
                                         }
                                         else {
-                                            bot.sendMessage(msg.channel, "**" + msg.sender + ", eklemeye çalıştığınız şarkı şu an zaten çalıyor.**");
+                                            bot.send(msg.channel, "**" + msg.sender + ", eklemeye çalıştığınız şarkı şu an zaten çalıyor.**");
                                         }
                                     } else {
-                                        bot.sendMessage(msg.channel, "**" + msg.sender + ", çalma listesi şu an dolu, lütfen şarkı bittikten sonra tekrar deneyiniz.**");
+                                        bot.send(msg.channel, "**" + msg.sender + ", çalma listesi şu an dolu, lütfen şarkı bittikten sonra tekrar deneyiniz.**");
                                     }
                                 } else {
-                                    bot.sendMessage(msg.channel, "**" + msg.sender + ", şarkı eklenemedi!**");
+                                    bot.send(msg.channel, "**" + msg.sender + ", şarkı eklenemedi!**");
                                 }
                             });
                         } else {
-                            bot.sendMessage(msg.channel, "**" + msg.sender + ", şarkı bulunamıyor!**");
+                            bot.send(msg.channel, "**" + msg.sender + ", şarkı bulunamıyor!**");
                         }
                     } else {
-                        bot.sendMessage(msg.channel, "**" + msg.sender + ", zaten çalma listesinde bir şarkınız bulunuyor.**");
+                        bot.send(msg.channel, "**" + msg.sender + ", zaten çalma listesinde bir şarkınız bulunuyor.**");
                     }
             } catch(e) {
                 console.log("Error çal at " + msg.channel.name + " : " + e);
@@ -479,9 +479,9 @@ function checkRole(id, user, role) {
 	    process: function(bot,msg,suffix) {
             try {
                     if(nowPlaying.hasOwnProperty("songName") && nowPlaying.hasOwnProperty("submitterName") && nowPlaying.songName && nowPlaying.submitterName) {
-                        bot.sendMessage(msg.channel, "**Çalan : **" + nowPlaying.songName + "** / Ekleyen : " + nowPlaying.submitterName + "**");
+                        bot.send(msg.channel, "**Çalan : **" + nowPlaying.songName + "** / Ekleyen : " + nowPlaying.submitterName + "**");
                     } else {
-                        bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.**");
+                        bot.send(msg.channel, "**Şu an çalan bir şarkı yok.**");
                     }
 	        } catch(e) {
 	            console.log("Error çalan at " + msg.channel.name + " : " + e);
@@ -493,9 +493,9 @@ function checkRole(id, user, role) {
 	    process: function(bot,msg,suffix) {
 	        try {
                     if(nowPlaying.hasOwnProperty("songID") && nowPlaying.songID) {
-                        bot.sendMessage(msg.channel, "*https://www.youtube.com/watch?v=" + nowPlaying.songID + "*");
+                        bot.send(msg.channel, "*https://www.youtube.com/watch?v=" + nowPlaying.songID + "*");
                     } else {
-                        bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.**");
+                        bot.send(msg.channel, "**Şu an çalan bir şarkı yok.**");
                     }
 	        } catch(e) {
 	            console.log("Error çalanlink at " + msg.channel.name + " : " + e);
@@ -507,9 +507,9 @@ function checkRole(id, user, role) {
 	    process: function(bot,msg,suffix) {
 	        try {
                     if(nowPlaying.hasOwnProperty("songID") && nowPlaying.songID) {
-                        bot.sendMessage(msg.channel, nowPlaying.songID);
+                        bot.send(msg.channel, nowPlaying.songID);
                     } else {
-                        bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.**");
+                        bot.send(msg.channel, "**Şu an çalan bir şarkı yok.**");
                     }
 	        } catch(e) {
 	            console.log("Error çalanid at " + msg.channel.name + " : " + e);
@@ -538,9 +538,9 @@ function checkRole(id, user, role) {
 
                         var reply1 = timeFormatString(currentHou, currentMin, currentSec);
                         var reply2 = timeFormatString(remainingHou, remainingMin, remainingSec);
-                        bot.sendMessage(msg.channel, "**" + secondsToHms(playTime.aseconds) + " / " + secondsToHms(date2) + "**");
+                        bot.send(msg.channel, "**" + secondsToHms(playTime.aseconds) + " / " + secondsToHms(date2) + "**");
                     } else {
-                        bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.**");
+                        bot.send(msg.channel, "**Şu an çalan bir şarkı yok.**");
                     }
 	        } catch(e) {
 	            console.log("Error kalansüre at " + msg.channel.name + " : " + e);
@@ -565,12 +565,12 @@ function checkRole(id, user, role) {
                                     songList[i] = songs[i];
                                 }
                                 updateSongList();
-                                bot.sendMessage(msg.channel, "Çalma listesindeki **" + (index+1) + "** numaralı şarkı silindi.");
+                                bot.send(msg.channel, "Çalma listesindeki **" + (index+1) + "** numaralı şarkı silindi.");
                             } else {
-                                bot.sendMessage(msg.channel, "Çalma listesinde **" + (index+1) + "** numaralı şarkı bulunamadı.");
+                                bot.send(msg.channel, "Çalma listesinde **" + (index+1) + "** numaralı şarkı bulunamadı.");
                             }
                         } else {
-                            bot.sendMessage(msg.channel, "Çalma listesinde **" + (index+1) + "** numaralı şarkı bulunamadı.");
+                            bot.send(msg.channel, "Çalma listesinde **" + (index+1) + "** numaralı şarkı bulunamadı.");
                         }
                     }
                 } else {
@@ -589,7 +589,7 @@ function checkRole(id, user, role) {
                     if(length == 0) {
                         reply = "Çalma listesinde hiç şarkı yok.";
                     }
-                    bot.sendMessage(msg.channel, reply);
+                    bot.send(msg.channel, reply);
                 }
             } catch(e) {
                 console.log("Error liste at " + msg.channel.name + " : " + e);
@@ -602,9 +602,9 @@ function checkRole(id, user, role) {
 	        try {
                 if(checkPermission(msg.sender.id,"dev") || checkRole(msg.channel.server.id, msg.sender, "Regular Users")) {
                 stopPlaying();
-                bot.sendMessage(msg.channel, "**Çalan şarkı durduruldu.**");
+                bot.send(msg.channel, "**Çalan şarkı durduruldu.**");
                 } else {
-                    bot.sendMessage(msg.channel, "** " + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
+                    bot.send(msg.channel, "** " + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
                 }
 	        } catch(e) {
 	            console.log("Error dur at " + msg.channel.name + " : " + e);
@@ -617,14 +617,14 @@ function checkRole(id, user, role) {
 	        try {
 	            if(checkPermission(msg.sender.id,"dev") || checkRole(msg.channel.server.id, msg.sender, "Regular Users")) {
                     if(nowPlaying.hasOwnProperty("songName")) {
-                        bot.sendMessage(msg.channel,"**" + msg.sender + " sıradaki şarkıya geçti!**", false, function() {
+                        bot.send(msg.channel,"**" + msg.sender + " sıradaki şarkıya geçti!**", false, function() {
                             playFromList(msg);
                         });
                     } else {
-                    bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.");
+                    bot.send(msg.channel, "**Şu an çalan bir şarkı yok.");
                     }
                 } else {
-                    bot.sendMessage(msg.channel, "**" + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
+                    bot.send(msg.channel, "**" + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
                 }
                 /*if(nowPlaying.hasOwnProperty("songName")) {
                     var text = "";
@@ -643,9 +643,9 @@ function checkRole(id, user, role) {
                     } else {
                         text = "Sıradaki şarkıya geçmek için gereken oy: " + voteSkipCount + "/" + required;
                     }
-                    bot.sendMessage(msg.channel, "**" + text + "**");
+                    bot.send(msg.channel, "**" + text + "**");
                 } else {
-                    bot.sendMessage(msg.channel, "**Şu an çalan bir şarkı yok.");
+                    bot.send(msg.channel, "**Şu an çalan bir şarkı yok.");
                 }*/
 	        } catch(e) {
 	            console.log("Error sıradaki at " + msg.channel.name + " : " + e);
@@ -659,9 +659,9 @@ function checkRole(id, user, role) {
 	                if(checkPermission(msg.sender.id, "trusted")) {
 	                    songList = {};
 	                    updateSongList();
-	                    bot.sendMessage(msg.channel, "**Çalma listesi temizlendi.**");
+	                    bot.send(msg.channel, "**Çalma listesi temizlendi.**");
 	                } else {
-	                    bot.sendMessage(msg.channel, "** " + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
+	                    bot.send(msg.channel, "** " + msg.sender + ", bu komutu kullanmak için gerekli yetkiye sahip değilsiniz.**");
 	                }
 	        } catch(e) {
 	            console.log("Error temizle at " + msg.channel.name + " : " + e);
@@ -704,9 +704,9 @@ function checkRole(id, user, role) {
                         updatePlayLists();
                         ytdl.getInfo("https://www.youtube.com/watch?v=" + s, function(err, videoInfo) {
                             if(err) {
-                                bot.sendMessage(msg.channel, "**\"" + s + "\" şarkısı \"" + pl + "\" çalma listesine eklendi.**");
+                                bot.send(msg.channel, "**\"" + s + "\" şarkısı \"" + pl + "\" çalma listesine eklendi.**");
                             }
-                            bot.sendMessage(msg.channel, "**\"" + videoInfo.title + "\" şarkısı \"" + pl + "\" çalma listesine eklendi.**");
+                            bot.send(msg.channel, "**\"" + videoInfo.title + "\" şarkısı \"" + pl + "\" çalma listesine eklendi.**");
                         });
                     } else if(cmd == "sil") {
                         if(playLists.hasOwnProperty(pl)) {
@@ -714,13 +714,13 @@ function checkRole(id, user, role) {
                                 playLists[pl].splice(playLists[pl].indexOf(s), 1);
                                 ytdl.getInfo("https://www.youtube.com/watch?v=" + s, function(err, videoInfo) {
                                     if(err) {
-                                        bot.sendMessage(msg.channel, "**\"" + s + "\" şarkısı \"" + pl + "\" çalma listesinden silindi.**");
+                                        bot.send(msg.channel, "**\"" + s + "\" şarkısı \"" + pl + "\" çalma listesinden silindi.**");
                                     }
-                                    bot.sendMessage(msg.channel, "**\"" + videoInfo.title + "\" şarkısı \"" + pl + "\" çalma listesinden silindi.**");
+                                    bot.send(msg.channel, "**\"" + videoInfo.title + "\" şarkısı \"" + pl + "\" çalma listesinden silindi.**");
                                 });
                                 updatePlayLists();
                             } else {
-                            bot.sendMessage(msg.channel, "**\"" + s + "\" id'si \"" + pl + "\" çalma listesinde bulunamadı.**");
+                            bot.send(msg.channel, "**\"" + s + "\" id'si \"" + pl + "\" çalma listesinde bulunamadı.**");
                             }
                         }
                     }
@@ -743,12 +743,12 @@ function checkRole(id, user, role) {
                     if(cmd == "ekle") {
                         alias[alis] = org;
                         updateAlias();
-                        bot.sendMessage(msg.sender, "**alias \"" + alis + " : " + org + "\" eklendi.**");
+                        bot.send(msg.sender, "**alias \"" + alis + " : " + org + "\" eklendi.**");
                     } else if(cmd == "sil") {
                         if(alias.hasOwnProperty(alis)) {
                             delete alias[alis];
                             updateAlias();
-                            bot.sendMessage(msg.sender, "**alias \"" + alis + "\" silindi.**");
+                            bot.send(msg.sender, "**alias \"" + alis + "\" silindi.**");
                         }
                     }
                 }
@@ -766,10 +766,10 @@ function checkRole(id, user, role) {
                 console.log(bot.joinServer(suffix,function(error,server) {
                     console.log("callback: " + arguments);
                     if(error){
-                     bot.sendMessage(msg.channel,"Bağlanılamadı! : " + error);
+                     bot.send(msg.channel,"Bağlanılamadı! : " + error);
                     } else {
                         console.log(" * Joined server " + server);
-                        bot.sendMessage(msg.channel,"Bağlanıldı! : " + server);
+                        bot.send(msg.channel,"Bağlanıldı! : " + server);
                     }
                 }));
             }
@@ -801,10 +801,10 @@ function checkRole(id, user, role) {
                         };
                         updateSongBanned();
                         if(h) {
-                            bot.sendMessage(msg.channel, "**<@" + user + "> kullanıcısının çalma listesine şarkı eklenmesi " + h + " saat boyunca yasaklandı.**");
+                            bot.send(msg.channel, "**<@" + user + "> kullanıcısının çalma listesine şarkı eklenmesi " + h + " saat boyunca yasaklandı.**");
                         }
                         else {
-                            bot.sendMessage(msg.channel, "**<@" + user + "> kullanıcısının çalma listesine şarkı eklemesi süresiz yasaklandı.**");
+                            bot.send(msg.channel, "**<@" + user + "> kullanıcısının çalma listesine şarkı eklemesi süresiz yasaklandı.**");
                         }
                     }
                 }
@@ -829,7 +829,7 @@ function checkRole(id, user, role) {
                         }
                         delete songBanned[user];
                         updateSongBanned();
-                        bot.sendMessage(msg.channel, "**<@" + user + "> artık çalma listesine şarkı ekleyebilir.**");
+                        bot.send(msg.channel, "**<@" + user + "> artık çalma listesine şarkı ekleyebilir.**");
                     }
                 }
             }
@@ -896,7 +896,7 @@ bot.on("message", function (msg) {
 				cmdTxt = cmdTxt.toLowerCase();
 				suffix = msg.content.substring(bot.user.mention().length+cmdTxt.length+2);
 			} catch(e){ //no command
-				//bot.sendMessage(msg.channel,"Efendim ?");
+				//bot.send(msg.channel,"Efendim ?");
 				return;
 			}
         }
@@ -948,7 +948,7 @@ bot.on("message", function (msg) {
 			    texttosend += "\r\nTek bir komut hakkında daha çok bilgi için \".help <komut>\"";
 			    texttosend += "\r\nBot sadece <#160894083173318666> kanalında çalışmaktadır.";
             }
-            bot.sendMessage(msg.channel,texttosend);
+            bot.send(msg.channel,texttosend);
             } catch(e) {
                 console.log("Error at help: " + e);
             }
@@ -959,7 +959,7 @@ bot.on("message", function (msg) {
 			        if(msg.channel.server.id == "129022124844253184" && msg.channel.id == "160894083173318666" || cmdTxt == "t" || cmdTxt == "alias") {
 				        cmd.process(bot,msg,suffix);
 			        } else {
-			            bot.sendMessage(msg.channel, "Bot sadece <#160894083173318666> kanalında çalışmaktadır.");
+			            bot.send(msg.channel, "Bot sadece <#160894083173318666> kanalında çalışmaktadır.");
 			        }
 			    }
 
