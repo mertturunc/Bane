@@ -30,7 +30,6 @@
     "request": "^2.81.0"
   },
   "scripts": {
-    "main": "node --harmony --trace-warnings Bane.js",
-    "musicbot": "node ./workinprogress/BaneMusic-beta.js"
+    "main": "node --harmony --trace-warnings Bane.js"
   }
 }
