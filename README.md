@@ -19,7 +19,7 @@ Usage
 
 Then, make your config.json based off from config-base.json. *(We won't provide any API support.)* After done all that,
 
-        node Bane.js
+        npm run-script main
 
 to run the script.
 
