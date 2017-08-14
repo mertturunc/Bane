@@ -6,7 +6,7 @@
 				if(suffix) {
 					console.log("msg.sender.username botun adını " + suffix + " ile değiştirdi.");
 					bot.setUsername(suffix, function(error) {
-						bot.sendMessage(msg.channel, error);
+						bot.send(msg.channel, error);
 					});
 						bot.deleteMessage(msg);
 				}
