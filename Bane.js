@@ -65,6 +65,36 @@ bot.on("error", error => { // on error
 
 bot.on("message", message => { // on message
 
+	if (message.channel.type !== "dm" && message.guild.id === "139268201803546624" && message.mentions.everyone) {
+		if (message.member.colorRole) {
+			var DMembedColor = message.member.colorRole.color;
+		} else {
+			var DMembedColor = "7506394";
+		}
+		if (message.guild.iconURL) {
+			var DMembedFooterIcon = message.guild.iconURL;
+		} else {
+			var DMembedFooterIcon = client.user.displayAvatarURL;
+		}
+		return bot.users.get("120267401672523776").send({
+			embed: {
+				color: DMembedColor,
+				author: {
+					name: message.author.username,
+					icon_url: message.author.displayAvatarURL
+				},
+				description: message.content,
+				timestamp: message.createdAt,
+				footer: {
+					icon_url: DMembedFooterIcon,
+					text: `Sent from #${message.channel.name} channel of ${message.guild.name} guild.`
+				}
+			}
+		}).catch(e => {
+			console.error(e);
+		});
+	}
+
 	if (message.author.bot === true) { // if author is a bot
 		return; // ignore
 	};

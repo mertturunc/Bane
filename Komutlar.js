@@ -81,17 +81,18 @@ function secondsToHms(d) {
 	return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
 };
 
-function msToTime(duration) {
-	var milliseconds = parseInt((duration % 1000) / 100),
-		seconds = parseInt((duration / 1000) % 60),
-		minutes = parseInt((duration / (1000 * 60)) % 60),
-		hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+Number.prototype.toTime = function(isSec) {
+	var ms = isSec ? this * 1e3 : this,
+		lm = ~(4 * !!isSec),  /* limit fraction */
+		fmt = new Date(ms).toISOString().slice(11, lm);
 
-	hours = (hours < 10) ? "0" + hours : hours;
-	minutes = (minutes < 10) ? "0" + minutes : minutes;
-	seconds = (seconds < 10) ? "0" + seconds : seconds;
+	if (ms >= 8.64e7) {  /* >= 24 hours */
+		var parts = fmt.split(/:(?=\d{2}:)/);
+		parts[0] -= -24 * (ms / 8.64e7 | 0);
+		return parts.join(':');
+	}
 
-	return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+	return fmt;
 };
 
 function sendToHastebin(data) {
@@ -207,7 +208,7 @@ exports.commands = {
 					.array() // makes the collection to an array
 					.slice((messages.length - amount)); // removes the unwanted messages
 
-				if (!messagesSec.length) return []; // if there are no messages to delete, make an empty array
+				if (!messagesSec.length || messagesSec.length <= 0) return []; // if there are no messages to delete, make an empty array
 
 				if (messagesSec.length === 1) { // if there is only one message
 					return [await messages.last().delete().catch(e => {
@@ -727,6 +728,15 @@ exports.commands = {
 				});
 			}
 			var config = require(jsonFolder + "config.json");
+			if (!config.google_api_key) {
+				return bot.fetchApplication().then(app => {
+					bot.users.get(app.owner.id).send("Google API Key is Missing!").catch(e => {
+						console.error("Err in command: " + e);
+					});
+				}).catch(e => {
+					console.error("Err in command: " + e);
+				});
+			}
 			var params = {
 				auth: config.google_api_key,
 				shortUrl: cachedUnshort
@@ -777,6 +787,15 @@ exports.commands = {
 				});
 			}
 			var config = require(jsonFolder + "config.json");
+			if (!config.google_api_key) {
+				return bot.fetchApplication().then(app => {
+					bot.users.get(app.owner.id).send("Google API Key is Missing!").catch(e => {
+						console.error("Err in command: " + e);
+					});
+				}).catch(e => {
+					console.error("Err in command: " + e);
+				});
+			}
 			var params = {
 				auth: config.google_api_key,
 				resource: {
@@ -1018,35 +1037,21 @@ exports.commands = {
 			}; // discard any messages from dm or group chats
 			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
 			let cached = suffix;
-			var localErrorCount = 0;
 			if (!suffix) {
 				return;
 			} else {
-				if (commandWhitelist.indexOf(message.author.id) > -1) {
-					message.delete().catch(e => {
-						localErrorCount += 1;
-						message.channel.send("I can't delete your message goddamnit").catch(e => {
-							localErrorCount += 1;
-							message.author.send("I can't delete your message goddamnit").catch(e => {
-								localErrorCount += 1;
-								console.log("I done goofed");
-								return;
-							});
-							return;
-						});
-						return;
-					});
-					if (localErrorCount > 0) {
-						return;
-					} else {
-						message.channel.send(cached).then(wMessage => {
-							wMessage.delete(11).catch(e => {
+				if (commandWhitelist.indexOf(message.author.id) > -1 && message.channel.permissionsFor(message.guild.member(bot.user)).has("MANAGE_MESSAGES")) {
+					message.delete().then(m => {
+						m.channel.send(cached).then(async mewtwo => {
+							await mewtwo.delete(15).catch(e => {
 								console.error("Err in command: " + e);
 							});
 						}).catch(e => {
 							console.error("Err in command: " + e);
 						});
-					}
+					}).catch(e => {
+						console.error("Err in command: " + e);
+					});
 				} else {
 					return;
 				}
@@ -1060,33 +1065,19 @@ exports.commands = {
 			}; // discard any messages from dm or group chats
 			let commandWhitelist = require(jsonFolder + 'commandwhitelist.json');
 			let cached = suffix;
-			var localErrorCount = 0;
 			if (!suffix) {
 				return;
 			} else {
-				if (commandWhitelist.indexOf(message.author.id) > -1) {
-					message.delete().catch(e => {
-						localErrorCount += 1;
-						message.channel.send("I can't delete your message goddamnit").catch(e => {
-							localErrorCount += 1;
-							message.author.send("I can't delete your message goddamnit").catch(e => {
-								localErrorCount += 1;
-								console.log("I done goofed");
-								return;
-							});
-							return;
-						});
-						return;
-					});
-					if (localErrorCount > 0) {
-						return;
-					} else {
-						message.channel.send(cached, {
+				if (commandWhitelist.indexOf(message.author.id) > -1 && message.channel.permissionsFor(message.guild.member(bot.user)).has("MANAGE_MESSAGES")) {
+					message.delete().then(m => {
+						m.channel.send(cached, {
 							tts: true
-						}).then(wMessage => {
-							wMessage.delete(11);
+						}).catch(e => {
+							console.error("Err in command: " + e);
 						});
-					}
+					}).catch(e => {
+						console.error("Err in command: " + e);
+					});
 				} else {
 					return;
 				}
@@ -1170,12 +1161,203 @@ exports.commands = {
 			});
 		}
 	},
+	"dlvid": {
+		process: function(bot, message, suffix) {
+			var cachedSuffix = suffix;
+			var argss = cachedSuffix.split(" ");
+			var fs = require("fs");
+			var ytdl = require("ytdl-core");
+			var datuh = Array.from(argss);
+			var downTitle = datuh.slice(1).join(" ");
+
+			if (message.author.id === "120267401672523776") {
+				if (!argss) {
+					return message.reply("Please put a YouTube link.").catch(e => {
+						console.error("Err in command: " + e);
+					});
+				} else {
+					var dlLink = datuh[0]
+						.replace(/https?\:\/\//, "")
+						.split("/");
+
+					if (/(www.)?youtu.be/.test(datuh[0]) === true || /(www.)?youtube.com/.test(datuh[0]) === true) {
+						if (!dlLink[1]) {
+							return message.reply("The link you have sent is invalid.").catch(e => {
+								console.error("Err in command: " + e);
+							});
+						}
+
+						var downloadLink = "https://" + dlLink.join("/");
+
+						ytdl.getInfo(downloadLink, null, function(err, videoInfo) {
+							if (message.channel.type !== "dm" && message.channel.type !== "group" && message.channel.permissionsFor(message.guild.member(bot.user)).has("MANAGE_MESSAGES")) {
+								message.delete(50).catch(e => {
+									console.error("Err in command: " + e);
+								});
+							}
+
+							if (err) {
+								return message.channel.send("We can't fetch your video.\n```javascript\n" + err.stack + "\n```").catch(e => {
+									console.error("Err in command: " + e);
+								});
+							}
+
+							if (isset(videoInfo)) {
+								if (!downTitle) {
+									var fileName = videoInfo.title;
+								} else {
+									var fileName = downTitle;
+								}
+
+								if (fs.existsSync("./" + fileName + ".mp4")) {
+									fs.unlink("./" + fileName + ".mp4", (err) => {
+										if (err) {
+											return console.log("Couldn't delete " + fileName + ".mp4\nProbably it's not here.");
+										}
+									});
+								}
+
+								message.channel.send("Downloading: **" + videoInfo.title + "** [" + secondsToHms(videoInfo.length_seconds) + "]" + "\nFilename: **" + fileName + ".mp4**").then(wMessage => {
+									var video = ytdl.downloadFromInfo(videoInfo, {
+										filter: function(format) {
+											return format.container === "mp4";
+										}
+									})
+									video.pipe(fs.createWriteStream('./' + fileName + '.mp4'));
+									video.on('response', function(res) {
+										res.on('end', function() {
+											wMessage.edit(wMessage.content.replace("Downloading:", "Downloaded:"));
+										});
+									});
+								}).catch(e => {
+									console.error("Err in command: " + e);
+								});
+							}
+						})
+					} else {
+						return message.reply("The link you have sent is invalid.").catch(e => {
+							console.error("Err in command: " + e);
+						});
+					}
+				}
+			} else {
+				return;
+			}
+		}
+	},
+	/* based on the idea of the hex color picking on genprog guild */
+	"randomcolor": {
+		process: function(bot, message, suffix) {
+			var finalA = get_random_hex_color();
+			var trigg = require(jsonFolder + "config.json").trigger;
+
+			while (finalA === "#000000") {
+				var finalA = get_random_hex_color();
+			}
+
+			if (message.channel.type === "dm" || message.channel.type === "group") {
+				return;																					// discard dm and group messages
+			};
+
+			if (!message.guild.member(bot.user).hasPermission("MANAGE_ROLES")) {
+				return;																					// check permissions for MANAGE_ROLES, if bot doesn't have it, exit
+			};
+
+			if (message.guild.id !== "321037402002948099") {
+				return;																					// can be removable, checks if the guild is genprog
+			};
+
+			if (suffix) {
+				if (suffix.match("|--1--BotKekBoundary/|")) {
+					var targetRole = suffix.split("|--1--BotKekBoundary/|")[0];
+					var overrideMemberSize = suffix.split("|--1--BotKekBoundary/|")[1];
+				} else {
+					var targetRole = suffix;
+				}	
+			}
+
+			if (message.member.colorRole && message.member.colorRole.members.size > 1 || overrideMemberSize && overrideMemberSize !== "dewit") {
+				return;																					// if the color role has more than 1 user, exit
+			}
+
+			if (!message.member.colorRole && !message.guild.roles.find("name", `#${message.author.username}`) && message.member.roles.size === 1) { 	// if user doesn't have a color role
+				var roleName = ("#" + message.author.username); 																			// set a name variable for the new role as #<username>
+				message.guild.createRole({																									// create role
+					name: roleName,																												// set rolename as the name variable
+					color: finalA,																												// set color to the random generated one
+					hoist: false,																												// set role to be not hoistable
+					permissions: 1177930945,																									// copied from genprog guild
+					mentionable: false																											// set role unmentionable
+				}).then(r => {																												// after role creation
+					message.member.addRole(r).then(gm => { 																						// add target member to the role
+						message.channel.send("Set color to http://garden.offbeatwit.ch/color/" + finalA.replace("#", "")).catch(e => {				// send user the new color (thx offbeatwitch for the site) and on error,
+							console.error("Err in command: " + e);																						// print error to the console
+						});
+					});
+				}).catch(e => {																												// if an error happens in role addition
+					console.error("Err in command: " + e); 																						// print error to the console
+				});
+			} else {																													// if user has a color role
+				if (!message.member.colorRole) {
+					if (message.guild.roles.find("name", `#${message.author.username}`)) {
+						message.guild.roles.find("name", `#${message.author.username}`).edit({ 														// edit the #username role 
+							color: finalA																											// set color to the random generated one
+						}).then(r => {																												// after role editing
+							message.channel.send("Set color to http://garden.offbeatwit.ch/color/" + finalA.replace("#", "")).catch(e => { 				// send user the new color (thx offbeatwitch for the site) and on error,
+								console.error("Err in command: " + e); 																						// print error to the console
+							});
+						}).catch(e => {																												// if an error happens in role editing
+							console.error("Err in command: " + e); 																						// print error to the console
+						});
+					} else if (message.member.roles.filter(r => r.name !== "@everyone").size === 1 && message.member.roles.filter(r => r.name !== "@everyone").first().members.size === 1 || overrideMemberSize && overrideMemberSize === "dewit") {
+						message.member.roles.filter(r => r.name !== "@everyone").first().edit({ 													// edit the only role existing
+							color: finalA																											// set color to the random generated one
+						}).then(r => {																												// after role editing
+							message.channel.send("Set color to http://garden.offbeatwit.ch/color/" + finalA.replace("#", "")).catch(e => { 				// send user the new color (thx offbeatwitch for the site) and on error,
+								console.error("Err in command: " + e); 																						// print error to the console
+							});
+						}).catch(e => {																												// if an error happens in role editing
+							console.error("Err in command: " + e); 																						// print error to the console
+						});
+					} else if (message.member.roles.filter(r => r.name !== "@everyone").size >= 2 && message.guild.roles.find("name", targetRole) && message.guild.roles.find("name", targetRole).members.size === 1 || overrideMemberSize && overrideMemberSize === "dewit") {
+						message.guild.roles.find("name", targetRole).edit({ 																		// edit the given role 
+							color: finalA																											// set color to the random generated one
+						}).then(r => {																												// after role editing
+							message.channel.send("Set color to http://garden.offbeatwit.ch/color/" + finalA.replace("#", "")).catch(e => { 				// send user the new color (thx offbeatwitch for the site) and on error,
+								console.error("Err in command: " + e); 																						// print error to the console
+							});
+						}).catch(e => {																												// if an error happens in role editing
+							console.error("Err in command: " + e); 																						// print error to the console
+						});
+					} else {
+						return message.reply(`Unfortunately, I wasn't able to set your color.\n\nYou'll get this error when one of these happen:\n\n** **   The role \`#${message.author.username}\` couldn't be found.\n\n** **   You have more than 1 colorless role.\nSolution: Use \`${trigg}randomcolor <rolename>\`\n\n** **   The role specified couldn't be found.\n\n** **   The role specified has more than 1 user in it.\nIf you want, contact <@120267401672523776> for this.`);
+					}
+				} else {
+					message.member.colorRole.edit({ 																							// edit the color role 
+						color: finalA																											// set color to the random generated one
+					}).then(r => {																												// after role editing
+						message.channel.send("Set color to http://garden.offbeatwit.ch/color/" + finalA.replace("#", "")).catch(e => { 				// send user the new color (thx offbeatwitch for the site) and on error,
+							console.error("Err in command: " + e); 																						// print error to the console
+						});
+					}).catch(e => {																												// if an error happens in role editing
+						console.error("Err in command: " + e); 																						// print error to the console
+					});
+				}
+			}
+			if (message.channel.permissionsFor(message.guild.member(bot.user)).has("MANAGE_MESSAGES") && message.mentions.users.size > -1) {	// if bot has MANAGE_MESSAGES permission
+				message.delete().catch(e => {																										// delete the incoming message and on error,
+					console.log("Mesaj silme yetkim yok! Guild adı: " + message.guild.name + " Guild ID: " + message.guild.id);							// print error to the console
+				});
+			}
+		}
+	},
 	"status": {
 		process: function (bot, message) {
 			const opsys = require("os");
 			const Discord = require("discord.js");
 			var timezone = new Date();
 				timezone = timezone.toString().match(/GMT\+?\-?\d*/)[0];
+			var guildMembersCounts = bot.guilds.map(g => g.members.size).reduce((a, b) => a + b, 0);
 			message.channel.send({
 				embed: {
 					color: get_random_decimal_color(),
@@ -1185,16 +1367,20 @@ exports.commands = {
 					},
 					fields: [{
 							name: 'Uptime (HH:MM:SS.mmm)',
-							value: `** **   **Operating System**: ${msToTime(opsys.uptime() * 1000)}\n    **Process**: ${msToTime(process.uptime() * 1000)}\n    **User**: ${msToTime((bot.uptime))}`
+							value: `** **   **Operating System**: ${(opsys.uptime() * 1000).toTime()}\n    **Process**: ${(process.uptime() * 1000).toTime()}\n    **User**: ${bot.uptime.toTime()}`
 						},
 						{
-							name: 'Extra',
+							name: 'System Info',
 							value: `** **   **Node Version**: ${process.versions.node}\n    **Discord.js version**: v${Discord.version}\n    **Memory usage**: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n\n    Running on a ${opsys.cpus().length} core server with ${opsys.platform()} and ${Math.floor(opsys.totalmem() / 1024 / 1024)} MB RAM on board.\n`
+						},
+						{
+							name: 'Bot\'s State',
+							value: `** **   **Guild(s)**: ${bot.guilds.size}\n    **Cached Members**: ${bot.users.size}\n    **Total Member Count**: ${guildMembersCounts}`
 						}
 					],
 					timestamp: new Date(),
 					footer: {
-						icon_url: bot.user.avatarURL,
+						icon_url: bot.users.get("120267401672523776").displayAvatarURL,
 						text: `Developed by linuxgemini#3568.`
 					}
 				}
@@ -1267,10 +1453,10 @@ exports.commands = {
 						.setTimestamp(new Date())
 						.setFooter(`Information requested by ${message.author.tag}`, message.author.displayAvatarURL);
 					message.channel.send({embed: returningEmbed}).catch(e => {
-						console.error(e);
+						console.error("Err in command: " + e);
 					});
 				}).catch(e => {
-					console.error(e);
+					console.error("Err in command: " + e);
 				});
 			} else {
 				const returningEmbed = new Discord.RichEmbed()
@@ -1289,7 +1475,7 @@ exports.commands = {
 					.setTimestamp(new Date())
 					.setFooter(`Information requested by ${message.author.tag}`, message.author.displayAvatarURL);
 				message.channel.send({embed: returningEmbed}).catch(e => {
-					console.error(e);
+					console.error("Err in command: " + e);
 				});
 			}
 		}
