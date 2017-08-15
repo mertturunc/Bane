@@ -728,6 +728,15 @@ exports.commands = {
 				});
 			}
 			var config = require(jsonFolder + "config.json");
+			if (!config.google_api_key) {
+				return bot.fetchApplication().then(app => {
+					bot.users.get(app.owner.id).send("Google API Key is Missing!").catch(e => {
+						console.error("Err in command: " + e);
+					});
+				}).catch(e => {
+					console.error("Err in command: " + e);
+				});
+			}
 			var params = {
 				auth: config.google_api_key,
 				shortUrl: cachedUnshort
@@ -778,6 +787,15 @@ exports.commands = {
 				});
 			}
 			var config = require(jsonFolder + "config.json");
+			if (!config.google_api_key) {
+				return bot.fetchApplication().then(app => {
+					bot.users.get(app.owner.id).send("Google API Key is Missing!").catch(e => {
+						console.error("Err in command: " + e);
+					});
+				}).catch(e => {
+					console.error("Err in command: " + e);
+				});
+			}
 			var params = {
 				auth: config.google_api_key,
 				resource: {
@@ -1273,10 +1291,10 @@ exports.commands = {
 						.setTimestamp(new Date())
 						.setFooter(`Information requested by ${message.author.tag}`, message.author.displayAvatarURL);
 					message.channel.send({embed: returningEmbed}).catch(e => {
-						console.error(e);
+						console.error("Err in command: " + e);
 					});
 				}).catch(e => {
-					console.error(e);
+					console.error("Err in command: " + e);
 				});
 			} else {
 				const returningEmbed = new Discord.RichEmbed()
@@ -1295,7 +1313,7 @@ exports.commands = {
 					.setTimestamp(new Date())
 					.setFooter(`Information requested by ${message.author.tag}`, message.author.displayAvatarURL);
 				message.channel.send({embed: returningEmbed}).catch(e => {
-					console.error(e);
+					console.error("Err in command: " + e);
 				});
 			}
 		}
