@@ -208,7 +208,7 @@ exports.commands = {
 					.array() // makes the collection to an array
 					.slice((messages.length - amount)); // removes the unwanted messages
 
-				if (!messagesSec.length) return []; // if there are no messages to delete, make an empty array
+				if (!messagesSec.length || messagesSec.length <= 0) return []; // if there are no messages to delete, make an empty array
 
 				if (messagesSec.length === 1) { // if there is only one message
 					return [await messages.last().delete().catch(e => {
