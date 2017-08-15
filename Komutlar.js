@@ -81,17 +81,18 @@ function secondsToHms(d) {
 	return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
 };
 
-function msToTime(duration) {
-	var milliseconds = parseInt((duration % 1000) / 100),
-		seconds = parseInt((duration / 1000) % 60),
-		minutes = parseInt((duration / (1000 * 60)) % 60),
-		hours = parseInt((duration / (1000 * 60 * 60)) % 24);
+Number.prototype.toTime = function(isSec) {
+	var ms = isSec ? this * 1e3 : this,
+		lm = ~(4 * !!isSec),  /* limit fraction */
+		fmt = new Date(ms).toISOString().slice(11, lm);
 
-	hours = (hours < 10) ? "0" + hours : hours;
-	minutes = (minutes < 10) ? "0" + minutes : minutes;
-	seconds = (seconds < 10) ? "0" + seconds : seconds;
+	if (ms >= 8.64e7) {  /* >= 24 hours */
+		var parts = fmt.split(/:(?=\d{2}:)/);
+		parts[0] -= -24 * (ms / 8.64e7 | 0);
+		return parts.join(':');
+	}
 
-	return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+	return fmt;
 };
 
 function sendToHastebin(data) {
@@ -1176,6 +1177,7 @@ exports.commands = {
 			const Discord = require("discord.js");
 			var timezone = new Date();
 				timezone = timezone.toString().match(/GMT\+?\-?\d*/)[0];
+			var guildMembersCounts = bot.guilds.map(g => g.members.size).reduce((a, b) => a + b, 0);
 			message.channel.send({
 				embed: {
 					color: get_random_decimal_color(),
@@ -1185,16 +1187,20 @@ exports.commands = {
 					},
 					fields: [{
 							name: 'Uptime (HH:MM:SS.mmm)',
-							value: `** **   **Operating System**: ${msToTime(opsys.uptime() * 1000)}\n    **Process**: ${msToTime(process.uptime() * 1000)}\n    **User**: ${msToTime((bot.uptime))}`
+							value: `** **   **Operating System**: ${(opsys.uptime() * 1000).toTime()}\n    **Process**: ${(process.uptime() * 1000).toTime()}\n    **User**: ${bot.uptime.toTime()}`
 						},
 						{
-							name: 'Extra',
+							name: 'System Info',
 							value: `** **   **Node Version**: ${process.versions.node}\n    **Discord.js version**: v${Discord.version}\n    **Memory usage**: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2)} MB\n\n    Running on a ${opsys.cpus().length} core server with ${opsys.platform()} and ${Math.floor(opsys.totalmem() / 1024 / 1024)} MB RAM on board.\n`
+						},
+						{
+							name: 'Bot\'s State',
+							value: `** **   **Guild(s)**: ${bot.guilds.size}\n    **Cached Members**: ${bot.users.size}\n    **Total Member Count**: ${guildMembersCounts}`
 						}
 					],
 					timestamp: new Date(),
 					footer: {
-						icon_url: bot.user.avatarURL,
+						icon_url: bot.users.get("120267401672523776").displayAvatarURL,
 						text: `Developed by linuxgemini#3568.`
 					}
 				}
