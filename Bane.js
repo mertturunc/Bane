@@ -52,8 +52,10 @@ bot.on("ready", () => { // when bot is ready
 	} else {
 		setTimeout(function() { // in a 2,5 second timeout
 			console.log(`Başladı! Şu an ${bot.guilds.size} adet sunucuya (ve ${bot.channels.filter(c => c.type === "text").size} yazı kanalına) hizmet veriyorum.\nGün içindeki bağlanma sayısı: ${connectionCount}`); // print that the bot is ready with total stats
-			bot.user.setStatus("online").then(u => {
-				u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+			bot.user.setStatus("online").then(async u => {
+				await u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+			}).catch(e => {
+				console.error(`Err in setStatus, ${e}`);
 			}); // set status as online, with the game
 		}, 2500);
 	}
@@ -80,14 +82,14 @@ bot.on("message", message => { // on message
 			embed: {
 				color: DMembedColor,
 				author: {
-					name: message.author.username,
+					name: `${message.author.username} (${message.author.id})`,
 					icon_url: message.author.displayAvatarURL
 				},
 				description: message.content,
 				timestamp: message.createdAt,
 				footer: {
 					icon_url: DMembedFooterIcon,
-					text: `Sent from #${message.channel.name} channel of ${message.guild.name} guild.`
+					text: `Sent from #${message.channel.name} of ${message.guild.name} guild.`
 				}
 			}
 		}).catch(e => {
@@ -160,15 +162,19 @@ bot.on("message", message => { // on message
 
 bot.on("guildCreate", guild => { // when bot joins to a guild
 	console.log(`Yeni bir sunucuya katıldım!\n  Ad: ${guild.name}\n  ID: ${guild.id}\n\n  Sahibi:\n    Tag: ${guild.owner.user.tag}\n    ID: ${guild.owner.user.id}\n`); // print what the guild is and who owns it
-	bot.user.setStatus("online").then(u => {
-		u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+	bot.user.setStatus("online").then(async u => {
+		await u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+	}).catch(e => {
+		console.error(`Err in setStatus, ${e}`);
 	}); // set status as online, with the game
 });
 
 bot.on("guildDelete", guild => { // when bot leaves or deletes a guild
 	console.log(`Bir sunucudan ayrıldım!\n  Ad: ${guild.name}\n  ID: ${guild.id}\n\n  Sahibi:\n    Tag: ${guild.owner.user.tag}\n    ID: ${guild.owner.user.id}\n`); // print what the guild was and who owned it
-	bot.user.setStatus("online").then(u => {
-		u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+	bot.user.setStatus("online").then(async u => {
+		await u.setGame(`${startGame} | ${bot.guilds.size} guild(s)`);
+	}).catch(e => {
+		console.error(`Err in setStatus, ${e}`);
 	}); // set status as online, with the game
 });
 
